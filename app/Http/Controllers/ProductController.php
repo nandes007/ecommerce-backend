@@ -13,7 +13,7 @@ class ProductController extends Controller
         $data = Product::with(['productImages' => function ($query) {
                             $query->select('id', 'product_id', 'path');
                         }])
-                        ->select('id', 'product_name', 'slug', 'price', 'weight', 'stock', 'description')
+                        ->select('id', 'product_name', 'slug', 'tax', 'avgcost', 'price', 'weight', 'stock', 'description')
                         ->get();
 
         return $this->output(status: 'success', data: $data, code: 200);

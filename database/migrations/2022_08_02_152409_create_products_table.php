@@ -14,14 +14,15 @@ return new class extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->primary();
             $table->string('barcode');
             $table->string('product_name');
             $table->string('slug');
             $table->string('unit')->nullable();
             $table->string('fraction')->nullable();
             $table->string('status')->nullable();
-            $table->decimal('unitprice_old', 15, 2)->nullable();
+            $table->decimal('avgcost', 15, 2)->nullable();
+            $table->decimal('lastcost', 15, 2)->nullable();
             $table->decimal('unitprice', 15, 2)->nullable();
             $table->decimal('price_old', 15, 2)->nullable();
             $table->decimal('price', 15, 2)->nullable();

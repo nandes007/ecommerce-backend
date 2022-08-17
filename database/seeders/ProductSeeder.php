@@ -16,6 +16,54 @@ class ProductSeeder extends Seeder
     {
         $fake = Faker::create('id_ID');
 
+        $product_id = [
+            '0010006',
+            '0100004',
+            '0100006',
+            '0100026',
+            '0100245',
+            '0100658',
+            '0100721',
+            '0101726',
+            '0102443',
+            '0102832',
+            '0103115',
+            '0103177',
+            '0103462',
+            '0103566',
+            '0104776',
+            '0107733',
+            '0110034',
+            '0110051',
+            '0110052',
+            '0110065',
+            '0110071',
+            '0110086',
+            '0110101',
+            '0110109',
+            '0110110',
+            '0110111',
+            '0110122',
+            '0110123',
+            '0110127',
+            '0110129',
+            '0110138',
+            '0110140',
+            '0110143',
+            '0110145',
+            '0110149',
+            '0110166',
+            '0110167',
+            '0110168',
+            '0110169',
+            '0110176',
+            '0110179',
+            '0110180',
+            '0110181',
+            '0110182',
+            '0110188',
+        ];
+
         $codes = [
             '011194568047',
             '011194558550',
@@ -303,22 +351,26 @@ class ProductSeeder extends Seeder
             '1'
         ];
 
+        $stat = ['active', 'inactive', 'draft'];
         $flag = [true, false];
 
         for ($i = 1; $i <= 30; $i++) {
+            $productId = $fake->unique()->randomElement($product_id);
             $code = $fake->unique()->randomElement($codes);
             $product_name = $fake->unique()->randomElement($products);
             $unit = $fake->randomElement($units);
             $frac = $fake->randomElement($fraction);
-            $status = $fake->randomElement($flag);
+            $status = $fake->randomElement($stat);
             $data[] = [
+                'id' => $productId,
                 'barcode' => $code,
                 'product_name' => $product_name,
                 'slug' => Str::slug($product_name),
                 'unit' => $unit,
                 'fraction' => $frac,
                 'status' => $status,
-                'unitprice_old' => rand(1, 100) * 1000,
+                'avgcost' => rand(1, 100) * 1000,
+                'lastcost' => rand(1, 100) * 1000,
                 'unitprice' => $fake->numberBetween(1, 100) * 1000,
                 'price_old' => $fake->numberBetween(1, 100) * 1000,
                 'price' => $fake->numberBetween(1, 100) * 1000,
@@ -333,85 +385,115 @@ class ProductSeeder extends Seeder
         // $product = (new Product())->insert($data);
         Product::insert($data);
 
-        $product = Product::find(1);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product1.jpg'])
-        ]);
+        $paths = [
+            'uploads/images/original/product1.jpg',
+            'uploads/images/original/product2.jpg',
+            'uploads/images/original/product3.jpg',
+            'uploads/images/original/product4.jpg',
+            'uploads/images/original/product5.jpg',
+            'uploads/images/original/product6.jpg',
+            'uploads/images/original/product7.jpg',
+            'uploads/images/original/product8.jpg',
+            'uploads/images/original/product9.jpg',
+            'uploads/images/original/product10.jpg',
+            'uploads/images/original/product11.jpg',
+            'uploads/images/original/product12.jpg',
+            'uploads/images/original/product13.jpg',
+            'uploads/images/original/product14.jpg',
+            'uploads/images/original/product15.jpg',
+            'uploads/images/original/product16.jpg'
+        ];
 
-        $product = Product::find(1);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product16.jpg'])
-        ]);
+        $productss = Product::get();
 
-        $product = Product::find(2);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product1.jpg'])
-        ]);
+        foreach($productss as $key => $value)
+        {
+            $key++;
+            $ss[] = [
+                'product_id' => $value->id,
+                'path' => "uploads/images/original/product$key.jpg",
+                'extra_large' => "uploads/images/original/product$key.jpg",
+                'large' => "uploads/images/original/product$key.jpg",
+                'medium' => "uploads/images/original/product$key.jpg",
+                'small' => "uploads/images/original/product$key.jpg",
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ];
+        }
 
-        $product = Product::find(3);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product3.jpg'])
-        ]);
+        ProductImage::insert($ss);
 
-        $product = Product::find(4);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product4.jpg'])
-        ]);
+        // $product = Product::find('0110182');
+        // $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product1.jpg'])
+        // ]);
 
-        $product = Product::find(5);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product5.jpg'])
-        ]);
+        // $product = Product::find('0110182');
+        // $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product16.jpg'])
+        // ]);
 
-        $product = Product::find(6);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product6.jpg'])
-        ]);
+        // $product = Product::find('0110182');        $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product1.jpg'])
+        // ]);
 
-        $product = Product::find(7);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product7.jpg'])
-        ]);
+        // $product = Product::find('0110182');        $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product3.jpg'])
+        // ]);
 
-        $product = Product::find(8);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product8.jpg'])
-        ]);
+        // $product = Product::find('0110182');        $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product4.jpg'])
+        // ]);
 
-        $product = Product::find(9);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product9.jpg'])
-        ]);
+        // $product = Product::find('0110182');        $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product5.jpg'])
+        // ]);
 
-        $product = Product::find(10);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product10.jpg'])
-        ]);
+        // $product = Product::find('0110182');        $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product6.jpg'])
+        // ]);
 
-        $product = Product::find(11);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product11.jpg'])
-        ]);
+        // $product = Product::find('0110182');        $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product7.jpg'])
+        // ]);
 
-        $product = Product::find(12);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product12.jpg'])
-        ]);
+        // $product = Product::find('0110182');        $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product8.jpg'])
+        // ]);
 
-        $product = Product::find(13);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product13.jpg'])
-        ]);
+        // $product = Product::find('0110182');        $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product9.jpg'])
+        // ]);
 
-        $product = Product::find(14);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product14.jpg'])
-        ]);
+        // $product = Product::find('0110182');
+        // $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product10.jpg'])
+        // ]);
 
-        $product = Product::find(15);
-        $product->productImages()->saveMany([
-            new ProductImage(['path' => 'uploads/images/original/product15.jpg'])
-        ]);
+        // $product = Product::find('0110182');
+        // $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product11.jpg'])
+        // ]);
+
+        // $product = Product::find('0110182');
+        // $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product12.jpg'])
+        // ]);
+
+        // $product = Product::find('0110182');
+        // $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product13.jpg'])
+        // ]);
+
+        // $product = Product::find('0110182');
+        // $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product14.jpg'])
+        // ]);
+
+        // $product = Product::find('0110182');
+        // $product->productImages()->saveMany([
+        //     new ProductImage(['path' => 'uploads/images/original/product15.jpg'])
+        // ]);
 
     }
 }

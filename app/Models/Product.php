@@ -9,6 +9,10 @@ class Product extends Model
 {
     use HasFactory;
 
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     public function productImages()
     {
         return $this->hasMany(ProductImage::class);

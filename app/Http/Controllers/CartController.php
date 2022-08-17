@@ -3,27 +3,88 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Cart;
+use App\Services\Cart\CartService;
+use Exception;
+use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
-    public function saveItems(Request $request)
-    {
-        $data = json_encode($request->all());
-        $res = array();
-        $cart = new Cart();
-        $cart->user_id = 1;
-        $cart->items = $data;
-        $cart->status = false;
-        $cart->save();
+    private $cartService;
 
-        if ($cart != null) {
-            $res["id"] = $cart->id;
-            $res["user_id"] = $cart->user_id;
-            $res["status"] = $cart->status;
-            $res["items"] = json_decode($cart->items);
+    public function __construct(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
+
+    public function index(Request $request)
+    {
+        $userId = $request->user()->id;
+        $result = $this->cartService->findUserCart($userId);
+        // $result = $this->cartService->updateQuantity($userId);
+
+        return response()->json($result);
+    }
+
+    public function store(Request $request)
+    {
+        $userId = $request->user()->id;
+        $items = $request->all();
+        
+        $data = [
+            'id' => Str::uuid(),
+            'user_id' => $userId,
+            'items' => $items,
+            'status' => false
+        ];
+
+        try {
+            $result = [];
+            $saveCart = $this->cartService->saveItems($data);
+            if ($saveCart) {
+                $result = $this->cartService->findByUserId($userId);
+            }
+            $statusCode = 200;
+            $message = 'success';
+        } catch (Exception $e) {
+            $result = [];
+            $statusCode = 500;
+            $message = $e->getMessage();
         }
 
-        return $this->output(status: 'success', data: $res, code: 200);
+        return $this->output(data: $result, message: $message, code:$statusCode);
+    }
+
+    public function find(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        try {
+            $result = $this->cartService->findByUserId($userId);
+            $statusCode = 200;
+            $message = 'success';
+        } catch (Exception $e) {
+            $result = [];
+            $statusCode = 500;
+            $message = $e->getMessage();
+        }
+
+        return $this->output(data: $result, message: $message, code:$statusCode);
+    }
+
+    public function destroy(Request $request)
+    {
+        $userId = $request->user()->id;
+        $productId = $request->input('productId');
+        try {
+            $result = $this->cartService->deleteCartItem($userId, $productId);
+            $statusCode = 204;
+            $message = 'success';
+        } catch (Exception $e) {
+            $result = [];
+            $statusCode = 500;
+            $message = $e->getMessage();
+        }
+
+        return $this->output(data: $result, message: $message, code:$statusCode);
     }
 }
