@@ -354,7 +354,7 @@ class ProductSeeder extends Seeder
         $stat = ['active', 'inactive', 'draft'];
         $flag = [true, false];
 
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 15; $i++) {
             $productId = $fake->unique()->randomElement($product_id);
             $code = $fake->unique()->randomElement($codes);
             $product_name = $fake->unique()->randomElement($products);
