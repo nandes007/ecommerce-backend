@@ -67,4 +67,9 @@ class CartServiceImpl implements CartService
 
         return [];
     }
+
+    public function updateQuantity($cartId, $productId, $quantity)
+    {
+        return $this->cartRepository->updateQuantity($cartId, $productId, $quantity);
+    }
 }

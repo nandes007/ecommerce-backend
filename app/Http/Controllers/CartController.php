@@ -54,6 +54,26 @@ class CartController extends Controller
         return $this->output(data: $result, message: $message, code:$statusCode);
     }
 
+    public function update(Request $request)
+    {
+        $data = [
+            'cartId' => $request->input('cartId'),
+            'productId' => $request->input('productId'),
+            'quantity' => $request->input('quantity'),
+        ];
+
+        try {
+            $this->cartService->updateQuantity($data['cartId'], $data['productId'], $data['quantity']);
+            $statusCode = 200;
+            $message = 'success';
+        } catch (Exception $e) {
+            $statusCode = 500;
+            $message = $e->getMessage();
+        }
+
+        return $this->output(message: $message, code:$statusCode);
+    }
+
     public function find(Request $request)
     {
         $userId = $request->user()->id;

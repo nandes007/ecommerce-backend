@@ -11,4 +11,6 @@ interface CartService
     public function findUserCart($userId);
 
     public function deleteCartItem($userId, $productId);
+
+    public function updateQuantity($cartId, $productId, $quantity);
 }
