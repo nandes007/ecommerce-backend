@@ -3,11 +3,38 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\User\UserService;
+use Exception;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class UserController extends Controller
 {
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $userId = $request->user()->id;
+        $data = $request->all();
+
+        try {
+            $result = $this->userService->updateProfile($userId, $data);
+            $statusCode = 200;
+            $message = 'success';
+        } catch (Exception $e) {
+            $result = [];
+            $statusCode = 500;
+            $message = $e->getMessage();
+        }
+
+        return $this->output(data: $result, message: $message, code:$statusCode);
+    }
+
     public function check(Request $request)
     {
         $authHeader = $request->header('Authorization');
@@ -31,6 +58,13 @@ class UserController extends Controller
             'name' => $request->user()->name,
             'email' => $request->user()->email,
             'phone_number' => $request->user()->phone_number,
+            'gender' => $request->user()->gender,
+            'birth_of_date' => $request->user()->birth_of_date,
+            'type' => $request->user()->type,
+            'province_id' => $request->user()->province_id,
+            'city_id' => $request->user()->city_id,
+            'address' => $request->user()->address,
+            'postalcode' => $request->user()->postalcode
         ];
 
         return $this->output(status: 'success', data: $data, code: 200);
