@@ -9,13 +9,18 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RajaOngkirController;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * User Endpoint
+ */
 Route::get('/users', [UserController::class, 'profile'])->middleware('auth:sanctum', 'is_verified');
 Route::prefix('/users')->group(function () {
     Route::middleware(['auth:sanctum', 'is_verified'])->group(function () {
         Route::get('/logout', [UserController::class, 'logout']);
         Route::get('/change-password', ChangePasswordController::class);
+        Route::put('/update', [UserController::class, 'updateProfile']);
     });
     Route::middleware('is_verified')->group(function () {
         Route::post('/login', LoginController::class);
@@ -29,6 +34,9 @@ Route::prefix('/users')->group(function () {
     Route::post('/check', [UserController::class, 'check']);
 });
 
+/**
+ * Cart Endpoint
+ */
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
@@ -39,3 +47,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/carts/user/cart', [CartController::class, 'find']);
     Route::patch('/carts/update', [CartController::class, 'update']);
 });
+
+/**
+ * Raja Ongkir Endpoint
+ * This is third party api provide by raja ongkir
+ */
+Route::get('/rajaongkir/provinces', [RajaOngkirController::class, 'getProvince']);
+Route::get('/rajaongkir/cities/{provinceId}', [RajaOngkirController::class, 'getCities']);
