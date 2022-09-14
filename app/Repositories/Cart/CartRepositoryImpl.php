@@ -51,6 +51,7 @@ class CartRepositoryImpl implements CartRepository
         $cartItem->quantity = $data['items']['quantity'];
         $cartItem->tax = $data['items']['tax'];
         $cartItem->price = $data['items']['price'];
+        $cartItem->weight = $data['items']['weight'];
         
         $cartItem->save();
 
@@ -71,7 +72,8 @@ class CartRepositoryImpl implements CartRepository
                         'slug' => $items->slug,
                         'quantity' => $items->quantity,
                         'price' => $items->price,
-                        'tax' => $items->tax
+                        'tax' => $items->tax,
+                        'weight' => $items->tax,
                     ];
                 })
             ];
@@ -139,6 +141,15 @@ class CartRepositoryImpl implements CartRepository
         $cartItem->delete();
 
         return $cartItem;
+    }
+
+    public function delete($cartId)
+    {
+        $cart = $this->cart->find($cartId);
+        $cart->cartItems()->delete();
+        $cart->delete();
+        
+        return [];
     }
 
     public function format($cart)

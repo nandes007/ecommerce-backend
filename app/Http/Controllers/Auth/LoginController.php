@@ -32,6 +32,6 @@ class LoginController extends Controller
 
         $token = $user->createToken($device_name);
 
-        return $this->output(status: 'success', message: 'Login success.', data: $token->plainTextToken, code: 200);
+        return $this->output(status: true, message: 'Login success.', data: $token->plainTextToken, code: 200);
     }
 }

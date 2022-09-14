@@ -13,6 +13,6 @@ class CategoryController extends Controller
                         ->select('name', 'slug')
                         ->get();
         
-        return $this->output(status: 'success', data: $categories, code: 200);
+        return $this->output(status: true, data: $categories, code: 200);
     }
 }

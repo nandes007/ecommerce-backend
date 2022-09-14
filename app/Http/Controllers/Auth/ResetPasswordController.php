@@ -57,9 +57,9 @@ class ResetPasswordController extends Controller
         if ($status == Password::PASSWORD_RESET) {
             $user = User::where('email', $email)->first();
             $user->tokens()->delete();
-            return $this->output(status: 'success', message: 'Your password has been reset successfully.', code: 200);
+            return $this->output(status: true, message: 'Your password has been reset successfully.', code: 200);
         }
 
-        return $this->output(status: 'failed', message: _($status), code: 500);
+        return $this->output(status: false, message: _($status), code: 500);
     }
 }

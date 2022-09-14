@@ -46,10 +46,10 @@ class RegisterController extends Controller
         RegisteredUser::dispatch($user);
 
         if ($user != null) {
-            return $this->output(status: 'success', data: $user->email, code: 201);
+            return $this->output(status: true, data: $user->email, code: 201);
         }
 
-        return $this->output(status: 'failed', message: 'Oops something went wrong', code: 400);
+        return $this->output(status: false, message: 'Oops something went wrong', code: 400);
     }
 
     public function verify(Request $request)
@@ -62,12 +62,12 @@ class RegisterController extends Controller
             if ($user->email == $email && $user->code == $code) {
                 $user->is_verified = true;
                 $user->save();
-                return $this->output(status: 'success', message: 'Your account has been verified successfully.', code: 201);
+                return $this->output(status: true, message: 'Your account has been verified successfully.', code: 201);
             } else {
-                return $this->output(status: 'failed', message: 'Your verification code is invalid.', code: 400);
+                return $this->output(status: false, message: 'Your verification code is invalid.', code: 400);
             }
         }
 
-        return $this->output(status: 'failed', message: 'Your user is not found.', code: 404);
+        return $this->output(status: false, message: 'Your user is not found.', code: 404);
     }
 }
