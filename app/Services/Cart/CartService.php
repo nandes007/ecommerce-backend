@@ -13,4 +13,6 @@ interface CartService
     public function deleteCartItem($userId, $productId);
 
     public function updateQuantity($cartId, $productId, $quantity);
+
+    public function delete($cartId);
 }

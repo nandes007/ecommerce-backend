@@ -26,13 +26,15 @@ class UserController extends Controller
             $result = $this->userService->updateProfile($userId, $data);
             $statusCode = 200;
             $message = 'success';
+            $status = true;
         } catch (Exception $e) {
             $result = [];
             $statusCode = 500;
             $message = $e->getMessage();
+            $status = true;
         }
 
-        return $this->output(data: $result, message: $message, code:$statusCode);
+        return $this->output(status: $status, data: $result, message: $message, code:$statusCode);
     }
 
     public function check(Request $request)
@@ -44,12 +46,12 @@ class UserController extends Controller
         
         if ($accessToken) {
             if (hash_equals($accessToken->token, hash('sha256', $token))) {
-                return $this->output(status: 'success', message: 'Token is match.', code: 200);
+                return $this->output(status: true, message: 'Token is match.', code: 200);
             } else {
-                return $this->output(status: 'failed', message: 'Token is miss match', code: 401);
+                return $this->output(status: false, message: 'Token is miss match', code: 401);
             }
         }
-        return $this->output(status: 'failed', message: 'Token is not found', code: 401);
+        return $this->output(status: false, message: 'Token is not found', code: 401);
     }
 
     public function profile(Request $request)
@@ -67,7 +69,7 @@ class UserController extends Controller
             'postalcode' => $request->user()->postalcode
         ];
 
-        return $this->output(status: 'success', data: $data, code: 200);
+        return $this->output(status: true, data: $data, code: 200);
     }
 
     public function logout(Request $request)
@@ -75,9 +77,9 @@ class UserController extends Controller
         $user = $request->user()->currentAccessToken()->delete();
 
         if ($user) {
-            return $this->output(status: 'success', message: 'You are logout', code: 200);
+            return $this->output(status: true, message: 'You are logout', code: 200);
         }
 
-        return $this->output(status: 'failed', message: 'Logout is failed', code: 400);
+        return $this->output(status: false, message: 'Logout is failed', code: 400);
     }
 }

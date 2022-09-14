@@ -19,4 +19,6 @@ interface CartRepository
     public function addCartItem($data, $userId);
 
     public function deleteCartItem($cartId, $productId);
+
+    public function delete($cartId);
 }
