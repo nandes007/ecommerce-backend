@@ -25,9 +25,9 @@ class ChangePasswordController extends Controller
         if ($user && Hash::check($oldPassword, $userLoggin->password)) {
             $user->password = Hash::make($newPassword);
             $user->save();
-            return $this->output(status: 'success', message: 'Your password has been changed successfully.', code: 201);
+            return $this->output(status: true, message: 'Your password has been changed successfully.', code: 201);
         }
 
-        return $this->output(status: 'failed', message: 'The provided credentials are incorrect.', code: 400);
+        return $this->output(status: false, message: 'The provided credentials are incorrect.', code: 400);
     }
 }

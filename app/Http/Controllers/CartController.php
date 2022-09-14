@@ -16,15 +16,6 @@ class CartController extends Controller
         $this->cartService = $cartService;
     }
 
-    public function index(Request $request)
-    {
-        $userId = $request->user()->id;
-        $result = $this->cartService->findUserCart($userId);
-        // $result = $this->cartService->updateQuantity($userId);
-
-        return response()->json($result);
-    }
-
     public function store(Request $request)
     {
         $userId = $request->user()->id;
@@ -45,13 +36,15 @@ class CartController extends Controller
             }
             $statusCode = 200;
             $message = 'success';
+            $status = true;
         } catch (Exception $e) {
             $result = [];
             $statusCode = 500;
             $message = $e->getMessage();
+            $status = false;
         }
 
-        return $this->output(data: $result, message: $message, code:$statusCode);
+        return $this->output(status: $status, data: $result, message: $message, code:$statusCode);
     }
 
     public function update(Request $request)
@@ -66,12 +59,14 @@ class CartController extends Controller
             $this->cartService->updateQuantity($data['cartId'], $data['productId'], $data['quantity']);
             $statusCode = 200;
             $message = 'success';
+            $status = true;
         } catch (Exception $e) {
             $statusCode = 500;
             $message = $e->getMessage();
+            $status = false;
         }
 
-        return $this->output(message: $message, code:$statusCode);
+        return $this->output(status: $status, message: $message, code:$statusCode);
     }
 
     public function find(Request $request)
@@ -82,13 +77,15 @@ class CartController extends Controller
             $result = $this->cartService->findByUserId($userId);
             $statusCode = 200;
             $message = 'success';
+            $status = true;
         } catch (Exception $e) {
             $result = [];
             $statusCode = 500;
             $message = $e->getMessage();
+            $status = false;
         }
 
-        return $this->output(data: $result, message: $message, code:$statusCode);
+        return $this->output(status: $status, data: $result, message: $message, code:$statusCode);
     }
 
     public function destroy(Request $request)
@@ -99,12 +96,14 @@ class CartController extends Controller
             $result = $this->cartService->deleteCartItem($userId, $productId);
             $statusCode = 204;
             $message = 'success';
+            $status = true;
         } catch (Exception $e) {
             $result = [];
             $statusCode = 500;
             $message = $e->getMessage();
+            $status = false;
         }
 
-        return $this->output(data: $result, message: $message, code:$statusCode);
+        return $this->output(status: $status, data: $result, message: $message, code:$statusCode);
     }
 }

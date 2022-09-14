@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('product_name');
             $table->string('slug');
             $table->char('tax');
+            $table->decimal('weight', 15, 2)->nullable();
             $table->decimal('tax_percent', 18, 2)->nullable();
             $table->decimal('tax_amount', 18, 2)->nullable();
             $table->decimal('discount_percent', 18, 2)->nullable();

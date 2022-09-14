@@ -30,6 +30,6 @@ class ResendVerificationController extends Controller
         $user->code = $code;
         $user->save();
         RegisteredUser::dispatch($user);
-        return $this->output(status: 'success', message: 'Verification code has been sent.', code: 200);
+        return $this->output(status: true, message: 'Verification code has been sent.', code: 200);
     }
 }

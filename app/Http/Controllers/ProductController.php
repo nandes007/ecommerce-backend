@@ -16,6 +16,6 @@ class ProductController extends Controller
                         ->select('id', 'product_name', 'slug', 'tax', 'avgcost', 'price', 'weight', 'stock', 'description')
                         ->get();
 
-        return $this->output(status: 'success', data: $data, code: 200);
+        return $this->output(status: true, data: $data, code: 200);
     }
 }
