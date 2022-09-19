@@ -45,6 +45,29 @@ class OrderRepositoryImpl implements OrderRepository
         return $order;
     }
 
+    public function findByUserId($userId)
+    {
+        $order = $this->order->with('orderItems')->where('user_id', $userId)->get()->map(function ($order) {
+            return [
+                'id' => $order->id,
+                'userId' => $order->user_id,
+                'status' => $order->status,
+                'order_date' => $order->order_date,
+                'payment_status' => $order->payment_status,
+                'grand_total' => $order->grand_total,
+                'items' => $order->orderItems->map(function ($items) {
+                    return [
+                        'productId' => $items->product_id,
+                        'price' => $items->price,
+                        'sub_total' => $items->sub_total
+                    ];
+                })
+            ];
+        });
+
+        return $order;
+    }
+
     private function _saveOrder($data)
     {
         $status = 'Created';

@@ -41,4 +41,9 @@ class Order extends Model
         'cancelled_at',
         'cancellation_note'
     ];
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
 }

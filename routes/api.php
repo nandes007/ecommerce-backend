@@ -61,6 +61,7 @@ Route::prefix('/rajaongkir')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index']);
     Route::post('/orders', [OrderController::class, 'store']);
 });
 
