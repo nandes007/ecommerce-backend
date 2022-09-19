@@ -24,6 +24,14 @@ $ cp .env.example .env
 $ php artisan key:generate
 ```
 
+```
+# Migration table
+$ php artisan migrate
+
+# Start the development server
+$ php artisan serve
+```
+
 Example hint to endpoint :
 ```
 # example request to products endpoint using curl
@@ -77,13 +85,6 @@ See more in **routes/api.php** file.
 
 Before generate database. Make sure you have created a database and configure it in .env file.
 Note: Unsure you have fill **MAIL** configuration and have **RAJA_ONGKIR_API** in .env file.
-```
-# Migration table
-$ php artisan migrate
-
-# Start the development server
-$ php artisan serve
-```
 
 ## Front-End
 
