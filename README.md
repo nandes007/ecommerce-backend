@@ -88,4 +88,4 @@ Note: Unsure you have fill **MAIL** configuration and have **RAJA_ONGKIR_API** i
 
 ## Front-End
 
-Here link to see font-end source code. [MIT license](https://github.com/nandes007/ecommerce-frontend).
+Here link to see font-end source code. [Ecommerce Front-End](https://github.com/nandes007/ecommerce-frontend).
