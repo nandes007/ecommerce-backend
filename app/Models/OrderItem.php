@@ -22,4 +22,9 @@ class OrderItem extends Model
         'gross',
         'sub_total'
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
 }

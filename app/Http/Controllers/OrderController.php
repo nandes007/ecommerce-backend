@@ -18,6 +18,25 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
+    public function index(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        try {
+            $result = $this->orderService->findByUserId($userId);
+            $statusCode = 200;
+            $message = 'success';
+            $status = true;
+        } catch (Exception $e) {
+            $result = [];
+            $statusCode = 500;
+            $message = $e->getMessage();
+            $status = false;
+        }
+
+        return $this->output(status: $status, data: $result, message: $message, code:$statusCode);
+    }
+
     public function store(Request $request)
     {
         $user = $request->user();
@@ -26,7 +45,7 @@ class OrderController extends Controller
 
         try {
             $result = $this->orderService->saveItems($carts[0], $user, $cost);
-            $statusCode = 200;
+            $statusCode = 201;
             $message = 'success';
             $status = true;
         } catch (Exception $e) {

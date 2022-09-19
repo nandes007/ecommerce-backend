@@ -17,4 +17,9 @@ class OrderServiceImpl implements OrderService
     {
         return $this->orderRepository->saveItems($carts, $user, $cost);
     }
+
+    public function findByUserId($userId)
+    {
+        return $this->orderRepository->findByUserId($userId);
+    }
 }
