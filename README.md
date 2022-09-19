@@ -1,64 +1,91 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Simple Ecommerce Retail API
+## How to use ?
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+```
+# Clone the repository
+$ git clone https://github.com/nandes007/ecommerce-backend.git
 
-## About Laravel
+# Move into repository
+$ cd ecommerce-backend
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# Remove the current origin repository
+$ git remote remove origin
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+After the you can install the dependecies using composer
+```
+# Install dependecies
+composer install
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+# Copy .env.example to .env for configuration
+$ cp .env.example .env
 
-## Learning Laravel
+# Generate APP_KEY
+$ php artisan key:generate
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```
+# Migration table
+$ php artisan migrate
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Start the development server
+$ php artisan serve
+```
 
-## Laravel Sponsors
+Example hint to endpoint :
+```
+# example request to products endpoint using curl
+curl -v http://127.0.0.1:8000/api/products
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+# example response
+{
+    "status": true,
+    "message": null,
+    "data": [
+        {
+            "id": "0100004",
+            "product_name": "PEACH HALVES I/SYRUP 12/29OZ",
+            "slug": "peach-halves-isyrup-1229oz",
+            "tax": 0,
+            "avgcost": "76000.00",
+            "price": "82000.00",
+            "weight": "2200.00",
+            "stock": 48,
+            "description": "Soluta vel sed est veniam aut. Veniam deleniti aut dolorem sequi.",
+            "product_images": [
+                {
+                    "id": 1,
+                    "product_id": "0100004",
+                    "path": "uploads/images/original/product1.jpg"
+                }
+            ]
+        },
+        {
+            "id": "0100245",
+            "product_name": "SALAK BALI 24/565GR",
+            "slug": "salak-bali-24565gr",
+            "tax": 1,
+            "avgcost": "71000.00",
+            "price": "47000.00",
+            "weight": "6300.00",
+            "stock": 21,
+            "description": "In atque blanditiis amet. Molestiae aliquid voluptatum rem rem ratione pariatur cum eos.",
+            "product_images": [
+                {
+                    "id": 2,
+                    "product_id": "0100245",
+                    "path": "uploads/images/original/product2.jpg"
+                }
+            ]
+        }
+    ]
+}
+```
+See more in **routes/api.php** file.
 
-### Premium Partners
+Before generate database. Make sure you have created a database and configure it in .env file.
+Note: Unsure you have fill **MAIL** configuration and have **RAJA_ONGKIR_API** in .env file.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+## Front-End
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Here link to see font-end source code. [MIT license](https://github.com/nandes007/ecommerce-frontend).

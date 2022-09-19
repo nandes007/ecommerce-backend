@@ -10,11 +10,12 @@ use Illuminate\Support\Facades\Http;
 class RajaOngkirController extends Controller
 {
     private $cartService;
-    protected $API_KEY = '68f635cfccebef3edb10c9bf849cbaa1';
+    protected $API_KEY = null;
 
     public function __construct(CartService $cartService)
     {
         $this->cartService = $cartService;
+        $this->API_KEY = env('RAJA_ONGKIR_API_KEY');
     }
 
     public function getProvince()
