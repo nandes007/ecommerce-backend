@@ -24,6 +24,10 @@ $ cp .env.example .env
 $ php artisan key:generate
 ```
 
+Before run migration. Make sure you have created a database and configure it in .env file.
+Note: Unsure you have fill **MAIL** configuration and have **RAJA_ONGKIR_API** in .env file.
+
+
 ```
 # Migration table
 $ php artisan migrate
@@ -82,9 +86,6 @@ curl -v http://127.0.0.1:8000/api/products
 }
 ```
 See more in **routes/api.php** file.
-
-Before generate database. Make sure you have created a database and configure it in .env file.
-Note: Unsure you have fill **MAIL** configuration and have **RAJA_ONGKIR_API** in .env file.
 
 ## Front-End
 
