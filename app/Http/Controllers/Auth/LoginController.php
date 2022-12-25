@@ -3,28 +3,24 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(LoginRequest $request)
     {
-        $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-            'device_name' => ['required']
-        ]);
+        $request->validated();
 
-        $email = $request->input('email');
-        $password = $request->input('password');
-        $device_name = $request->input('device_name');
+        $email = $request->email;
+        $password = $request->password;
+        $device_name = $request->device_name;
 
         $user = User::where('email', $email)->first();
 
-        if (!$user || !Hash::check($password, $user->password)) {
+        if (empty($user) || !Hash::check($password, $user->password)) {
             throw ValidationException::withMessages([
                 'message' => ['The provided credentials are incorrect.'],
             ]);
@@ -32,6 +28,6 @@ class LoginController extends Controller
 
         $token = $user->createToken($device_name);
 
-        return $this->output(status: 'success', message: 'Login success.', data: $token->plainTextToken, code: 200);
+        return $this->successResponse(message: 'Login success', data: $token->plainTextToken, code: 200);
     }
 }

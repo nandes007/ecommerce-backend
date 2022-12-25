@@ -20,16 +20,13 @@ class ResendVerificationController extends Controller
 
         $user = User::where('email', $email)->first();
 
-        if (!$user) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'user not found'
-            ], 404);
+        if (empty($user)) {
+            return $this->errorResponse(message: 'User not found!', code: 404);
         }
 
         $user->code = $code;
         $user->save();
         RegisteredUser::dispatch($user);
-        return $this->output(status: 'success', message: 'Verification code has been sent.', code: 200);
+        return $this->successResponse(message: 'Verification code has been sent.', data: $user, code: 200);
     }
 }

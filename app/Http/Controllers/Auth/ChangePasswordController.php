@@ -3,31 +3,28 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class ChangePasswordController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(ChangePasswordRequest $request)
     {
-        $request->validate([
-            'old_password' => ['required'],
-            'new_password' => ['required', 'confirmed']
-        ]);
-
-        $oldPassword = $request->input('old_password');
-        $newPassword = $request->input('new_password');
+        $oldPassword = $request->old_password;
+        $newPassword = $request->new_password;
         $userLoggin = $request->user();
 
         $user = User::where('email', $userLoggin->email)->first();
 
+        if (empty($user)) {
+            return $this->errorResponse(code: 404, message: 'Sorry, user not found!');
+        }
+
         if ($user && Hash::check($oldPassword, $userLoggin->password)) {
             $user->password = Hash::make($newPassword);
             $user->save();
-            return $this->output(status: 'success', message: 'Your password has been changed successfully.', code: 201);
+            return $this->successResponse(code: 200, message: 'Your password has been changed successfully.');
         }
-
-        return $this->output(status: 'failed', message: 'The provided credentials are incorrect.', code: 400);
     }
 }

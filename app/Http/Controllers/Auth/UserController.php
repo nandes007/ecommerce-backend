@@ -19,6 +19,7 @@ class UserController extends Controller
 
     public function updateProfile(Request $request)
     {
+        $request->validated();
         $userId = $request->user()->id;
         $data = $request->all();
 
@@ -32,7 +33,7 @@ class UserController extends Controller
             $message = $e->getMessage();
         }
 
-        return $this->output(data: $result, message: $message, code:$statusCode);
+        return $this->successResponse(data: $result, message: $message, code:$statusCode);
     }
 
     public function check(Request $request)
@@ -41,15 +42,16 @@ class UserController extends Controller
         $keyAuth = substr($authHeader, 7);
         [$id, $token] = explode('|', $keyAuth, 2);
         $accessToken = PersonalAccessToken::find($id);
-        
-        if ($accessToken) {
-            if (hash_equals($accessToken->token, hash('sha256', $token))) {
-                return $this->output(status: 'success', message: 'Token is match.', code: 200);
-            } else {
-                return $this->output(status: 'failed', message: 'Token is miss match', code: 401);
-            }
+
+        if (empty($accessToken)) {
+            return $this->errorResponse(message: 'Token not found!', code: 404);
         }
-        return $this->output(status: 'failed', message: 'Token is not found', code: 401);
+
+        if (hash_equals($accessToken->token, hash('sha256', $token))) {
+            return $this->successResponse(message: 'Token is match.', code: 200, data: $accessToken);
+        } else {
+            return $this->errorResponse(message: 'Token is miss match', code: 401);
+        }
     }
 
     public function profile(Request $request)
@@ -67,17 +69,17 @@ class UserController extends Controller
             'postalcode' => $request->user()->postalcode
         ];
 
-        return $this->output(status: 'success', data: $data, code: 200);
+        return $this->successResponse(message: 'success', data: $data, code: 200);
     }
 
     public function logout(Request $request)
     {
         $user = $request->user()->currentAccessToken()->delete();
 
-        if ($user) {
-            return $this->output(status: 'success', message: 'You are logout', code: 200);
+        if (empty($user)) {
+            return $this->errorResponse(message: 'User not found!', code: 404);
         }
 
-        return $this->output(status: 'failed', message: 'Logout is failed', code: 400);
+        return $this->successResponse(message: 'You are logout', code: 200);
     }
 }

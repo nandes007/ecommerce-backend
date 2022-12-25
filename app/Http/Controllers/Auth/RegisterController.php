@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Events\RegisteredUser;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,24 +12,19 @@ use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 
 class RegisterController extends Controller
 {
-    public function send(Request $request)
+    public function send(RegisterRequest $request)
     {
-        $request->validate([
-            'name' => ['required', 'string'],
-            'email' => ['required', 'email'],
-            'phone_number' => ['required'],
-            'password' => ['required', 'confirmed']
-        ]);
+        $request->validated();
 
         $code = rand(100000, 999999);
-        $name = $request->input('name');
-        $email = $request->input('email');
-        $phone_number = $request->input('phone_number');
-        $password = $request->input('password');
+        $name = $request->name;
+        $email = $request->email;
+        $phone_number = $request->phone_number;
+        $password = $request->password;
 
         $user = User::where('email', $email)->first();
 
-        if (!$user) {
+        if (empty($user)) {
             $user = new User();
             $user->name = $name;
             $user->email = $email;
@@ -45,11 +41,11 @@ class RegisterController extends Controller
         $user->save();
         RegisteredUser::dispatch($user);
 
-        if ($user != null) {
-            return $this->output(status: 'success', data: $user->email, code: 201);
+        if (empty($user)) {
+            return $this->errorResponse(message: 'Oops something went wrong!', code: 500);
         }
 
-        return $this->output(status: 'failed', message: 'Oops something went wrong', code: 400);
+        return $this->successResponse(message: 'Your user has been registered successfuly', data: $user, code: 200);
     }
 
     public function verify(Request $request)
@@ -58,16 +54,15 @@ class RegisterController extends Controller
         $code = $request->input('code');
 
         $user = User::where('email', $email)->first();
-        if ($user) {
-            if ($user->email == $email && $user->code == $code) {
-                $user->is_verified = true;
-                $user->save();
-                return $this->output(status: 'success', message: 'Your account has been verified successfully.', code: 201);
-            } else {
-                return $this->output(status: 'failed', message: 'Your verification code is invalid.', code: 400);
-            }
+
+        if (empty($user)) {
+            return $this->errorResponse(message: 'User not found!', code: 404);
         }
 
-        return $this->output(status: 'failed', message: 'Your user is not found.', code: 404);
+        if ($user->email == $email && $user->code == $code) {
+            $user->is_verified = true;
+            $user->save();
+            return $this->successResponse(message: 'Your account has been verified successfully.', code: 200);
+        }
     }
 }
