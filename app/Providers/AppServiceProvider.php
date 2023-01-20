@@ -6,6 +6,8 @@ use App\Repositories\Cart\CartRepository;
 use App\Repositories\Cart\CartRepositoryImpl;
 use App\Repositories\User\UserRepository;
 use App\Repositories\User\UserRepositoryImpl;
+use App\Services\Admin\Category\CategoryService;
+use App\Services\Admin\Category\CategoryServiceImpl;
 use App\Services\Cart\CartService;
 use App\Services\Cart\CartServiceImpl;
 use App\Services\User\UserService;
@@ -25,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserRepository::class, UserRepositoryImpl::class);
         $this->app->bind(CartService::class, CartServiceImpl::class);
         $this->app->bind(UserService::class, UserServiceImpl::class);
+        $this->app->bind(CategoryService::class, CategoryServiceImpl::class);
     }
 
     /**

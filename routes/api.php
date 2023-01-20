@@ -13,6 +13,18 @@ use App\Http\Controllers\RajaOngkirController;
 use Illuminate\Support\Facades\Route;
 
 /**
+ * Admin endpoint
+ */
+Route::prefix('/admin')->group(function () {
+    Route::get('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index']);
+    Route::get('/categories/search', [\App\Http\Controllers\Admin\CategoryController::class, 'search']);
+    Route::post('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'store']);
+    Route::get('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'show']);
+    Route::patch('categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'update']);
+    Route::delete('categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'delete']);
+});
+
+/**
  * User Endpoint
  */
 Route::get('/users', [UserController::class, 'profile'])->middleware('auth:sanctum', 'is_verified');

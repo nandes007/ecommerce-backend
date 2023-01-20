@@ -6,7 +6,7 @@ use App\Repositories\Cart\CartRepository;
 use Illuminate\Support\Facades\Validator;
 use InvalidArgumentException;
 
-class CartServiceImpl implements CartService
+class  CartServiceImpl implements CartService
 {
     protected $cartRepository;
 
@@ -26,9 +26,9 @@ class CartServiceImpl implements CartService
         if ($validator->fails()) {
             throw new InvalidArgumentException($validator->errors()->first());
         }
-        
+
         $isExist = $this->cartRepository->findIdCart($data['user_id']);
-        
+
         if (!$isExist) {
             return $this->cartRepository->saveItems($data);
         } else {
@@ -39,7 +39,7 @@ class CartServiceImpl implements CartService
                 return $this->cartRepository->addCartItem($data, $data['user_id']);
             }
         }
-        
+
         return [];
     }
 
