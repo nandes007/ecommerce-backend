@@ -9,9 +9,14 @@ class Cart extends Model
 {
     use HasFactory;
 
-    public $incrementing = false;
-
-    protected $keyType = 'string';
+    protected $fillable = [
+        'user_id',
+        'status',
+        'tax_total_amount',
+        'discount_total_amount',
+        'sub_total',
+        'grand_total'
+    ];
 
     public function user()
     {

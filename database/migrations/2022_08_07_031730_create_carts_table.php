@@ -14,9 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('carts', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->unsignedBigInteger('user_id');
+            $table->id();
+            $table->unsignedBigInteger('user_id')->index();
             $table->boolean('status');
+            $table->decimal('tax_total_amount', 18, 2)->default(0);
+            $table->decimal('discount_total_amount', 18, 2)->default(0);
+            $table->decimal('sub_total', 18, 2)->default(0);
+            $table->decimal('grand_total', 18, 2)->default(0);
             $table->timestamps();
         });
     }

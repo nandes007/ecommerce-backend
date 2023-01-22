@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('product_images', function (Blueprint $table) {
             $table->id();
-            $table->string('product_id');
+            $table->unsignedBigInteger('product_id')->index();
             $table->text('path');
             $table->string('extra_large')->nullable();
             $table->string('large')->nullable();
