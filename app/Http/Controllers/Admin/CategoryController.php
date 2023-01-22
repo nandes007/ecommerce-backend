@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CategoryRequest;
 use Illuminate\Http\Request;
 use App\Services\Admin\Category\CategoryService;
 use Illuminate\Support\Str;
@@ -26,7 +27,7 @@ class CategoryController extends Controller
         }
     }
 
-    public function search(Request $request)
+    public function search(CategoryRequest $request)
     {
         try {
             $categories = $this->categoryService->search($request);
@@ -36,14 +37,14 @@ class CategoryController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
         $request->merge(['slug' => Str::slug($request->name)]);
         try {
             $category = $this->categoryService->storeCategory($request->only(['name', 'parent_id', 'slug']));
             return $this->successResponse(message: 'success', data: $category, code: 201);
         } catch (\Exception $e) {
-            return $this->errorResponse(message: 'Something went wrong' . $e, code: 500);
+            return $this->errorResponse(message: 'Something went wrong', code: 500);
         }
     }
 
@@ -61,7 +62,7 @@ class CategoryController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, $id)
     {
         $category = $this->categoryService->showCategory($id);
         if (empty($category)) {
@@ -70,7 +71,7 @@ class CategoryController extends Controller
         try {
             $category = $this->categoryService->updateCategory($request, $id);
 
-            return $this->successResponse(message: 'success', data: $category, code: 200);
+            return $this->successResponse(message: 'success', code: 200);
         } catch (\Exception $e) {
             return $this->errorResponse(message: 'Something went wrong', code: 500);
         }

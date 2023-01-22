@@ -50,7 +50,11 @@ class CategoryServiceImpl implements CategoryService
     {
         $category = $this->category
             ->where('id', $id)
-            ->update($request);
+            ->update([
+                'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'parent_id' => $request->parent_id
+            ]);
 
         return $category;
     }
