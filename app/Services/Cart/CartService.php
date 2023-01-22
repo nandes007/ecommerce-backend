@@ -4,13 +4,20 @@ namespace App\Services\Cart;
 
 interface CartService
 {
-    public function saveItems($data);
+    public function findCartByUserId($userId);
 
-    public function findByUserId($userId);
+    public function saveCart($request, $userId);
 
-    public function findUserCart($userId);
+    public function findCart($id);
 
-    public function deleteCartItem($userId, $productId);
+    public function updateQuantity($request);
 
-    public function updateQuantity($cartId, $productId, $quantity);
+    public function deleteCartItem($request);
+
+    public function addNewCartItem($request);
+
+    public function isItemExists($cartId, $productId);
+
+    public function findCartIdByUser($userId);
+    
 }
