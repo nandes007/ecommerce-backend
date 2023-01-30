@@ -22,6 +22,10 @@ Route::prefix('/admin')->group(function () {
     Route::get('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'show']);
     Route::patch('categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'update']);
     Route::delete('categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'delete']);
+
+    Route::get('/products', [\App\Http\Controllers\Admin\ProductController::class, 'index']);
+    Route::get('/products/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'show']);
+    Route::post('/products', [\App\Http\Controllers\Admin\ProductController::class, 'store']);
 });
 
 /**

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
-use Illuminate\Http\Request;
 use App\Services\Admin\Category\CategoryService;
 use Illuminate\Support\Str;
 
