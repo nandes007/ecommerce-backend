@@ -35,11 +35,15 @@ class ProductServiceImpl implements ProductService
 
  public function updateProduct($request, $id)
  {
+    $product = $this->product
+        ->where('id', $id)
+        ->update($request);
 
+    return $product;
  }
 
  public function deleteProduct($id)
  {
-
+    return $this->product->find($id)->delete();
  }
 }

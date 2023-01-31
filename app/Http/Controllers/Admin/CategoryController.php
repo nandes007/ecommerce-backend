@@ -63,11 +63,12 @@ class CategoryController extends Controller
 
     public function update(CategoryRequest $request, $id)
     {
-        $category = $this->categoryService->showCategory($id);
-        if (empty($category)) {
-            return $this->errorResponse(message: 'Category not found!', code: 404);
-        }
         try {
+            $category = $this->categoryService->showCategory($id);
+            if (empty($category)) {
+                return $this->errorResponse(message: 'Category not found!', code: 404);
+            }
+
             $category = $this->categoryService->updateCategory($request, $id);
 
             return $this->successResponse(message: 'success', code: 200);
@@ -78,12 +79,11 @@ class CategoryController extends Controller
 
     public function delete($id)
     {
-        $category = $this->categoryService->showCategory($id);
-        if (empty($category)) {
-            return $this->errorResponse(message: 'Category not found!', code: 404);
-        }
-
         try {
+            $category = $this->categoryService->showCategory($id);
+            if (empty($category)) {
+                return $this->errorResponse(message: 'Category not found!', code: 404);
+            }
             $this->categoryService->deleteCategory($id);
             return $this->successResponse(message: 'success', code: 200);
         } catch (\Exception $e) {

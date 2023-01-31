@@ -25,7 +25,6 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
-//        return response()->json($request->all());
         $request->merge([
             'slug' => Str::slug($request->product_name),
             'avgcost' => $request->unitprice,
@@ -57,11 +56,29 @@ class ProductController extends Controller
 
     public function update(ProductRequest $request, $id)
     {
-
+        try {
+            $product = $this->productService->showProduct($id);
+            if (empty($product)) {
+                return $this->errorResponse(message: 'Product not found!', code: 404);
+            }
+            $this->productService->updateProduct($request->all(), $id);
+            return $this->successResponse(message: 'success', code: 200);
+        } catch (\Exception $e) {
+            return $this->errorResponse(message: 'Something went wrong', code: 500);
+        }
     }
 
     public function destroy($id)
     {
-
+        try {
+            $product = $this->productService->showProduct($id);
+            if (empty($product)) {
+                return $this->errorResponse(message: 'Product not found!', code: 404);
+            }
+            $this->productService->deleteProduct($id);
+            return $this->successResponse(message: 'success', code: 200);
+        } catch (\Exception $e) {
+            return $this->errorResponse(message: 'Something went wrong!', code: 500);
+        }
     }
 }

@@ -28,7 +28,7 @@ class Controller extends BaseController
             'code' => $code,
             'message' => $message,
             'data' => $data
-        ]);
+        ], $code);
     }
 
     public function errorResponse($message = null, $code = 500)
