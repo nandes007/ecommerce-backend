@@ -27,10 +27,12 @@ class UserController extends Controller
             $result = $this->userService->updateProfile($userId, $data);
             $statusCode = 200;
             $message = 'success';
+            $status = true;
         } catch (Exception $e) {
             $result = [];
             $statusCode = 500;
             $message = $e->getMessage();
+            $status = true;
         }
 
         return $this->successResponse(data: $result, message: $message, code:$statusCode);

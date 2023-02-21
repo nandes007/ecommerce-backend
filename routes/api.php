@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RajaOngkirController;
 use Illuminate\Support\Facades\Route;
@@ -58,7 +59,6 @@ Route::prefix('/users')->group(function () {
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/carts', [CartController::class, 'index']);
     Route::get('/carts/{id}', [CartController::class, 'show']);
     Route::post('/carts', [CartController::class, 'store']);
     Route::post('/carts/delete', [CartController::class, 'destroy']);
@@ -69,5 +69,16 @@ Route::middleware('auth:sanctum')->group(function () {
  * Raja Ongkir Endpoint
  * This is third party api provide by raja ongkir
  */
-Route::get('/rajaongkir/provinces', [RajaOngkirController::class, 'getProvince']);
-Route::get('/rajaongkir/cities/{provinceId}', [RajaOngkirController::class, 'getCities']);
+Route::prefix('/rajaongkir')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/cost/{courier}', [RajaOngkirController::class, 'checkOngkir']);
+    });
+    // Route::get('/provinces', [RajaOngkirController::class, 'getProvince']);
+    // Route::get('/cities/{provinceId}', [RajaOngkirController::class, 'getCities']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
+});
+

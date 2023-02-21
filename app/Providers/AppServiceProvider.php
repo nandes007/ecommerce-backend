@@ -8,6 +8,8 @@ use App\Services\Admin\Product\ProductService;
 use App\Services\Admin\Product\ProductServiceImpl;
 use App\Services\Cart\CartService;
 use App\Services\Cart\CartServiceImpl;
+use App\Services\Order\OrderService;
+use App\Services\Order\OrderServiceImpl;
 use App\Services\User\UserService;
 use App\Services\User\UserServiceImpl;
 use Illuminate\Support\ServiceProvider;
