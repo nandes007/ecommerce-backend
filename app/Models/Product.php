@@ -9,9 +9,23 @@ class Product extends Model
 {
     use HasFactory;
 
-    public $incrementing = false;
-
-    protected $keyType = 'string';
+    protected $fillable = [
+        'sku',
+        'barcode',
+        'product_name',
+        'slug',
+        'unit',
+        'fraction',
+        'status',
+        'avgcost',
+        'lastcost',
+        'unitprice',
+        'price_old',
+        'price',
+        'weight',
+        'tax',
+        'description'
+    ];
 
     public function productImages()
     {

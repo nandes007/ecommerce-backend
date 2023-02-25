@@ -21,4 +21,21 @@ class Controller extends BaseController
             ], $code
         );
     }
+
+    public function successResponse($message = null, $data = null, $code = 200)
+    {
+        return response()->json([
+            'code' => $code,
+            'message' => $message,
+            'data' => $data
+        ], $code);
+    }
+
+    public function errorResponse($message = null, $code = 500)
+    {
+        return response()->json([
+            'code' => $code,
+            'message' => $message
+        ], $code);
+    }
 }

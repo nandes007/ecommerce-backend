@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
     {
         $fake = Faker::create('id_ID');
 
-        $product_id = [
+        $sku = [
             '0010006',
             '0100004',
             '0100006',
@@ -355,14 +355,14 @@ class ProductSeeder extends Seeder
         $flag = [true, false];
 
         for ($i = 1; $i <= 15; $i++) {
-            $productId = $fake->unique()->randomElement($product_id);
+            $productId = $fake->unique()->randomElement($sku);
             $code = $fake->unique()->randomElement($codes);
             $product_name = $fake->unique()->randomElement($products);
             $unit = $fake->randomElement($units);
             $frac = $fake->randomElement($fraction);
             $status = $fake->randomElement($stat);
             $data[] = [
-                'id' => $productId,
+                'sku' => $productId,
                 'barcode' => $code,
                 'product_name' => $product_name,
                 'slug' => Str::slug($product_name),
@@ -375,7 +375,7 @@ class ProductSeeder extends Seeder
                 'price_old' => $fake->numberBetween(1, 100) * 1000,
                 'price' => $fake->numberBetween(1, 100) * 1000,
                 'weight' => $fake->numberBetween(1, 100) * 100,
-                'stock' => $fake->numberBetween(1, 100),
+//                'stock' => $fake->numberBetween(1, 100),
                 'tax' => $fake->randomElement($flag),
                 'description' => $fake->text(100),
                 'created_at' => Carbon::now(),

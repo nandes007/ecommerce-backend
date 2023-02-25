@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('cart_items', function (Blueprint $table) {
             $table->id();
-            $table->uuid('cart_id');
-            $table->string('product_id');
+            $table->unsignedBigInteger('cart_id')->index();
+            $table->unsignedBigInteger('product_id')->index();
             $table->integer('quantity');
             $table->string('product_name');
+            $table->string('sku');
+            $table->string('barcode');
             $table->string('slug');
             $table->char('tax');
             $table->decimal('weight', 15, 2)->nullable();

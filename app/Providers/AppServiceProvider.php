@@ -2,12 +2,10 @@
 
 namespace App\Providers;
 
-use App\Repositories\Cart\CartRepository;
-use App\Repositories\Cart\CartRepositoryImpl;
-use App\Repositories\Order\OrderRepository;
-use App\Repositories\Order\OrderRepositoryImpl;
-use App\Repositories\User\UserRepository;
-use App\Repositories\User\UserRepositoryImpl;
+use App\Services\Admin\Category\CategoryService;
+use App\Services\Admin\Category\CategoryServiceImpl;
+use App\Services\Admin\Product\ProductService;
+use App\Services\Admin\Product\ProductServiceImpl;
 use App\Services\Cart\CartService;
 use App\Services\Cart\CartServiceImpl;
 use App\Services\Order\OrderService;
@@ -25,12 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(CartRepository::class, CartRepositoryImpl::class);
-        $this->app->bind(UserRepository::class, UserRepositoryImpl::class);
-        $this->app->bind(OrderRepository::class, OrderRepositoryImpl::class);
         $this->app->bind(CartService::class, CartServiceImpl::class);
         $this->app->bind(UserService::class, UserServiceImpl::class);
-        $this->app->bind(OrderService::class, OrderServiceImpl::class);
+        $this->app->bind(CategoryService::class, CategoryServiceImpl::class);
+        $this->app->bind(ProductService::class, ProductServiceImpl::class);
     }
 
     /**

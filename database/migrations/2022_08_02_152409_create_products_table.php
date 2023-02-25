@@ -14,9 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->string('barcode');
-            $table->string('product_name');
+            $table->id();
+            $table->string('sku')->index();
+            $table->string('barcode')->index();
+            $table->string('product_name')->index();
             $table->string('slug');
             $table->string('unit')->nullable();
             $table->string('fraction')->nullable();
@@ -27,7 +28,6 @@ return new class extends Migration
             $table->decimal('price_old', 15, 2)->nullable();
             $table->decimal('price', 15, 2)->nullable();
             $table->decimal('weight', 15, 2)->nullable();
-            $table->integer('stock')->nullable();
             $table->boolean('tax')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();

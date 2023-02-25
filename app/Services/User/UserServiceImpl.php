@@ -2,37 +2,36 @@
 
 namespace App\Services\User;
 
+use App\Models\User;
 use App\Repositories\User\UserRepository;
 use Illuminate\Support\Facades\Validator;
 use InvalidArgumentException;
 
 class UserServiceImpl implements UserService
 {
-    protected $userRepository;
+    protected $user;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(User $user)
     {
-        $this->userRepository = $userRepository;
+        $this->user = $user;
     }
 
-    public function updateProfile($id, $data)
+    public function updateProfile($id, $data) : User
     {
-        $validator = Validator::make($data, [
-            'name' => ['required'],
-            'email' => ['required'],
-            'phone_number' => ['required'],
-            'birth_of_date' => ['required'],
-            'gender' => ['required'],
-            'province_id' => ['required'],
-            'city_id' => ['required'],
-            'address' => ['required'],
-            'postalcode' => ['required']
-        ]);
+        $user = $this->user->find($id);
 
-        if ($validator->fails()) {
-            throw new InvalidArgumentException($validator->errors()->first());
-        }
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->phone_number = $data['phone_number'];
+        $user->birth_of_date = $data['birth_of_date'];
+        $user->gender = $data['gender'];
+        $user->province_id = $data['province_id'];
+        $user->city_id = $data['city_id'];
+        $user->address = $data['address'];
+        $user->postalcode = $data['postalcode'];
 
-        return $this->userRepository->updateProfile($id, $data);
+        $user->save();
+
+        return $user;
     }
 }

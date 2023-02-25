@@ -16,94 +16,106 @@ class CartController extends Controller
         $this->cartService = $cartService;
     }
 
+    public function index(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        try {
+            $cart = $this->cartService->findCartByUserId($userId);
+
+            if (empty($cart)) {
+                return $this->errorResponse(message: 'Cart of this user not found', code: 404);
+            }
+            
+            return $this->successResponse(message: 'success', data: $cart, code: 200);
+        } catch (Exception $e) {
+            return $this->errorResponse(message: 'Something went wrong!', code: 500);
+        }
+    }
+
     public function store(Request $request)
     {
         $userId = $request->user()->id;
-        $items = $request->all();
-        
-        $data = [
-            'id' => Str::uuid(),
-            'user_id' => $userId,
-            'items' => $items,
-            'status' => false
-        ];
-
         try {
-            $result = [];
-            $saveCart = $this->cartService->saveItems($data);
-            if ($saveCart) {
-                $result = $this->cartService->findByUserId($userId);
+            $cartId = $this->cartService->findCartIdByUser($userId);
+            if (!empty($cartId)) {
+                $isItemExists = $this->cartService->isItemExists($cartId, $request->product_id);
             }
-            $statusCode = 200;
-            $message = 'success';
-            $status = true;
-        } catch (Exception $e) {
-            $result = [];
-            $statusCode = 500;
-            $message = $e->getMessage();
-            $status = false;
-        }
 
-        return $this->output(status: $status, data: $result, message: $message, code:$statusCode);
+            if (!empty($cartId) && !empty($isItemExists)) {
+                $request->merge(['cart_id' => $cartId ]);
+                $cart = $this->cartService->updateQuantity($request->only([
+                    'cart_id',
+                    'product_id',
+                    'quantity'
+                ]));
+            } else if (!empty($cartId) && empty($isItemExists)) {
+                $request->merge(['cart_id' => $cartId ]);
+                $cart = $this->cartService->addNewCartItem($request->only([
+                    'cart_id',
+                    'product_id',
+                    'sku',
+                    'barcode',
+                    'product_name',
+                    'slug',
+                    'price',
+                    'weight',
+                    'quantity',
+                    'tax'
+                ]));
+            } else {
+                $request->merge(['cart_id' => '' ]);
+                $cart = $this->cartService->saveCart($request->only([
+                    'cart_id',
+                    'product_id',
+                    'sku',
+                    'barcode',
+                    'product_name',
+                    'slug',
+                    'price',
+                    'weight',
+                    'quantity',
+                    'tax'
+                ]), $userId);
+            }
+
+            return $this->successResponse(message: 'success', data: $cart, code: 201);
+        } catch (Exception $e) {
+            return $this->errorResponse(message: 'Something went wrong!' . $e, code: 500);
+        }
     }
 
     public function update(Request $request)
     {
-        $data = [
-            'cartId' => $request->input('cartId'),
-            'productId' => $request->input('productId'),
-            'quantity' => $request->input('quantity'),
-        ];
-
         try {
-            $this->cartService->updateQuantity($data['cartId'], $data['productId'], $data['quantity']);
-            $statusCode = 200;
-            $message = 'success';
-            $status = true;
+            $cart = $this->cartService->findCart($request->cart_id);
+
+            if (empty($cart)) {
+                return $this->errorResponse(message: 'Cart not found', code: 404);
+            }
+
+            $this->cartService->updateQuantity($request->only(['cart_id', 'product_id', 'quantity']));
+
+            return $this->successResponse(message: 'success', code: 200);
         } catch (Exception $e) {
-            $statusCode = 500;
-            $message = $e->getMessage();
-            $status = false;
+            return $this->errorResponse(message: 'Something went wrong!', code: 500);
         }
-
-        return $this->output(status: $status, message: $message, code:$statusCode);
-    }
-
-    public function find(Request $request)
-    {
-        $userId = $request->user()->id;
-
-        try {
-            $result = $this->cartService->findByUserId($userId);
-            $statusCode = 200;
-            $message = 'success';
-            $status = true;
-        } catch (Exception $e) {
-            $result = [];
-            $statusCode = 500;
-            $message = $e->getMessage();
-            $status = false;
-        }
-
-        return $this->output(status: $status, data: $result, message: $message, code:$statusCode);
     }
 
     public function destroy(Request $request)
     {
-        $userId = $request->user()->id;
-        $productId = $request->input('productId');
         try {
-            $result = $this->cartService->deleteCartItem($userId, $productId);
-            $statusCode = 204;
-            $message = 'success';
-            $status = true;
-        } catch (Exception $e) {
-            $result = [];
-            $statusCode = 500;
-            $message = $e->getMessage();
-            $status = false;
-        }
+            $cart = $this->cartService->findCart($request->cart_id);
 
-        return $this->output(status: $status, data: $result, message: $message, code:$statusCode);
+            if (empty($cart)) {
+                return $this->errorResponse(message: 'Cart not found', code: 404);
+            }
+
+            $this->cartService->deleteCartItem($request->only(['cart_id', 'product_id']));
+
+            return $this->successResponse(message: 'success', code: 200);
+        } catch (Exception $e) {
+            return $this->errorResponse(message: 'Something went wrong', code: 500);
+        }
     }
 }

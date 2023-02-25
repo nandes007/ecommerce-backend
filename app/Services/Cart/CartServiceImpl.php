@@ -2,79 +2,145 @@
 
 namespace App\Services\Cart;
 
-use App\Repositories\Cart\CartRepository;
+use App\Models\Cart;
+use App\Models\CartItem;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use InvalidArgumentException;
 
-class CartServiceImpl implements CartService
+class  CartServiceImpl implements CartService
 {
-    protected $cartRepository;
+    protected $cart;
+    protected $cartItem;
 
-    public function __construct(CartRepository $cartRepository)
+    public function __construct(Cart $cart, CartItem $cartItem)
     {
-        $this->cartRepository = $cartRepository;
+        $this->cart = $cart;
+        $this->cartItem = $cartItem;
     }
 
-    public function saveItems($data)
+    public function findCartByUserId($userId)
     {
-        $validator = Validator::make($data, [
-            'id' => ['required'],
-            'user_id' => ['required'],
-            'items' => ['required']
-        ]);
+        $cart = $this->cart->with('cartItems')->where('user_id', $userId)->get()->map(function ($cart) {
+            return [
+                'id' => $cart->id,
+                'userId' => $cart->user_id,
+                'status' => $cart->status,
+                'items' => $cart->cartItems->map(function ($items) {
+                    return [
+                        'productId' => $items->product_id,
+                        'product_name' => $items->product_name,
+                        'slug' => $items->slug,
+                        'quantity' => $items->quantity,
+                        'price' => $items->price,
+                        'tax' => $items->tax,
+                        'weight' => $items->tax,
+                    ];
+                })
+            ];
+        });
 
-        if ($validator->fails()) {
-            throw new InvalidArgumentException($validator->errors()->first());
-        }
-        
-        $isExist = $this->cartRepository->findIdCart($data['user_id']);
-        
-        if (!$isExist) {
-            return $this->cartRepository->saveItems($data);
-        } else {
-            $isItemExist = $this->cartRepository->isItemExist($isExist->id, $data['items']['id']);
-            if ($isExist && $isItemExist) {
-                return $this->cartRepository->updateQuantity($isExist->id, $data['items']['id'], $data['items']['quantity']);
-            } else {
-                return $this->cartRepository->addCartItem($data, $data['user_id']);
-            }
-        }
-        
-        return [];
+        return $cart;
     }
 
-    public function findByUserId($userId)
+    public function saveCart($request, $userId)
     {
-        return $this->cartRepository->findByUserId($userId);
+        $cart = DB::transaction(function () use ($request, $userId) {
+            $cartHeader = $this->_saveCart($userId);
+            $request['cart_id'] = $cartHeader->id;
+            $this->_saveCartItems($request);
+
+            return $this->findCart($cartHeader->id);
+        }, 5);
+
+        return $cart;
     }
 
-    public function findUserCart($userId)
+    public function updateQuantity($request)
     {
-        return $this->cartRepository->findUserCart($userId);
+        $cartItem = $this->cartItem->where('cart_id', $request['cart_id'])
+            ->where('product_id', $request['product_id'])
+            ->first();
+
+        $cartItem->quantity = $request['quantity'];
+
+        $cartItem->save();
+
+        $cart = $this->findCart($cartItem->cart_id);
+
+        return $cart;
     }
 
-    public function deleteCartItem($userId, $productId)
+    public function deleteCartItem($request)
     {
-        $cartId = $this->cartRepository->findIdCart($userId);
-        if ($cartId) {
-            $isItemExist = $this->cartRepository->isItemExist($cartId->id, $productId);
-            if ($isItemExist) {
-                return $this->cartRepository->deleteCartItem($cartId->id, $productId);
-            } else {
-                return [];
-            }
-        }
+        $cartItem = $this->cartItem->where('cart_id', $request['cart_id'])
+            ->where('product_id', $request['product_id'])
+            ->first();
 
-        return [];
+        $cartItem->delete();
+
+        return $cartItem;
+    }
+    
+    public function addNewCartItem($request)
+    {
+        $cartItem = $this->_saveCartItems($request);
+
+        return $this->findCart($cartItem->cart_id);
     }
 
-    public function updateQuantity($cartId, $productId, $quantity)
+    public function isItemExists($cartId, $productId)
     {
-        return $this->cartRepository->updateQuantity($cartId, $productId, $quantity);
+        $cartItem = $this->cartItem->where('cart_id', $cartId)
+            ->where('product_id', $productId)
+            ->first();
+
+        return $cartItem;
     }
 
-    public function delete($cartId)
+    public function findCartIdByUser($userId)
     {
-        return $this->cartRepository->delete($cartId);
+        $cart = $this->cart->where('user_id', $userId)->first();
+
+        return $cart->id;
     }
+
+    private function _saveCart($userId)
+    {
+        $cart = $this->cart->create(['user_id' => $userId]);
+
+        return $cart;
+    }
+
+    private function _saveCartItems($request)
+    {
+        $cartItem = $this->cartItem->create($request);
+
+        return $cartItem;
+    }
+
+    public function findCart($id)
+    {
+        $cart = $this->cart->with('cartItems')->where('id', $id)->get()->map(function ($cart) {
+            return [
+                'id' => $cart->id,
+                'userId' => $cart->user_id,
+                'status' => $cart->status,
+                'items' => $cart->cartItems->map(function ($items) {
+                    return [
+                        'productId' => $items->product_id,
+                        'product_name' => $items->product_name,
+                        'slug' => $items->slug,
+                        'quantity' => $items->quantity,
+                        'price' => $items->price,
+                        'tax' => $items->tax,
+                        'weight' => $items->tax,
+                    ];
+                })
+            ];
+        });
+
+        return $cart;
+    }
+
 }
