@@ -59,6 +59,7 @@ Route::prefix('/users')->group(function () {
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/carts', [CartController::class, 'index']);
     Route::get('/carts/{id}', [CartController::class, 'show']);
     Route::post('/carts', [CartController::class, 'store']);
     Route::post('/carts/delete', [CartController::class, 'destroy']);
