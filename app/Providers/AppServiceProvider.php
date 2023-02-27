@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Services\Admin\City\CityService;
+use App\Services\Admin\City\CityServiceImpl;
+use App\Services\Admin\Province\ProvinceService;
+use App\Services\Admin\Province\ProvinceServiceImpl;
+use Illuminate\Support\ServiceProvider;
 use App\Services\Admin\Category\CategoryService;
 use App\Services\Admin\Category\CategoryServiceImpl;
 use App\Services\Admin\Product\ProductService;
@@ -12,7 +17,6 @@ use App\Services\Order\OrderService;
 use App\Services\Order\OrderServiceImpl;
 use App\Services\User\UserService;
 use App\Services\User\UserServiceImpl;
-use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +31,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserService::class, UserServiceImpl::class);
         $this->app->bind(CategoryService::class, CategoryServiceImpl::class);
         $this->app->bind(ProductService::class, ProductServiceImpl::class);
+        $this->app->bind(ProvinceService::class, ProvinceServiceImpl::class);
+        $this->app->bind(CityService::class, CityServiceImpl::class);
     }
 
     /**
