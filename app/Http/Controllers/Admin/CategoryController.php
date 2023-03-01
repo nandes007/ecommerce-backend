@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    private $categoryService;
+    private CategoryService $categoryService;
 
     public function __construct(CategoryService $categoryService)
     {

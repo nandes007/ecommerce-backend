@@ -29,6 +29,9 @@ Route::prefix('/admin')->group(function () {
     Route::post('/products', [\App\Http\Controllers\Admin\ProductController::class, 'store']);
     Route::patch('/products/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'update']);
     Route::delete('/products/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'destroy']);
+
+    Route::resource('/provinces', \App\Http\Controllers\Admin\ProvinceController::class)->except(['create', 'edit']);
+    Route::resource('/cities', \App\Http\Controllers\Admin\CityController::class)->except(['create', 'edit']);
 });
 
 /**
@@ -78,8 +81,8 @@ Route::prefix('/rajaongkir')->group(function () {
     // Route::get('/cities/{provinceId}', [RajaOngkirController::class, 'getCities']);
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/orders', [OrderController::class, 'index']);
-    Route::post('/orders', [OrderController::class, 'store']);
-});
+//Route::middleware('auth:sanctum')->group(function () {
+//    Route::get('/orders', [OrderController::class, 'index']);
+//    Route::post('/orders', [OrderController::class, 'store']);
+//});
 
