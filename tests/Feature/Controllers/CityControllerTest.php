@@ -2,32 +2,35 @@
 
 namespace Tests\Feature\Controllers;
 
-use App\Models\Province;
+use App\Models\City;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
-class ProvinceControllerTest extends TestCase
+class CityControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testGetProvinceNotEmptyEndpoint()
+    public function testGetCityNotEmptyEndpoint()
     {
-        Province::factory()->create([
-            'name' => 'ACEH'
+        City::factory()->create([
+            'province_id' => 1,
+            'name' => 'KOTA MEDAN'
         ]);
 
-        $response = $this->getJson('/api/admin/provinces');
+        $response = $this->getJson('/api/admin/cities');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJson([
-                "code" => 200,
-                "message" => "success",
+            "code" => 200,
+            "message" => "success",
+            "data" => [
                 "data" => [
-                    "data" => [
                     [
                         "id" => 1,
-                        "name" => "ACEH"
+                        "province_id" => 1,
+                        "name" => "KOTA MEDAN"
                     ]
                 ]
             ]
@@ -54,7 +57,7 @@ class ProvinceControllerTest extends TestCase
 
     public function testGetEmptyEndpoint()
     {
-        $response = $this->getJson('/api/admin/provinces');
+        $response = $this->getJson('/api/admin/cities');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJson([
@@ -84,17 +87,18 @@ class ProvinceControllerTest extends TestCase
         ]);
     }
 
-    public function testStoreProvinceSuccess()
+    public function testStoreCitySuccess()
     {
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->post('/api/admin/provinces', ['name' => 'SUMATERA UTARA']);
+        ])->post('/api/admin/cities', ['province_id' => 1, 'name' => 'MEDAN']);
         $response->assertStatus(201);
         $response->assertJson([
-           "code" => 201,
-           'message' => "success",
+            "code" => 201,
+            "message" => "success",
             "data" => [
-               "name" => "SUMATERA UTARA"
+                "province_id" => 1,
+                "name" => "MEDAN"
             ]
         ]);
     }
@@ -102,12 +106,15 @@ class ProvinceControllerTest extends TestCase
     public function testStoreProvinceEmptyProperty()
     {
         $response = $this->withHeaders([
-            'Accept' => 'application/json'
-        ])->post('/api/admin/provinces', ['name' => '']);
+            "Accept" => "application/json"
+        ])->post('/api/admin/cities', ['province_id' => '', 'name' => '']);
         $response->assertStatus(422);
         $response->assertJson([
-            "message" => "The name field is required.",
+            "message" => "The province id field is required. (and 1 more error)",
             "errors" => [
+                "province_id" => [
+                    "The province id field is required."
+                ],
                 "name" => [
                     "The name field is required."
                 ]
@@ -117,62 +124,65 @@ class ProvinceControllerTest extends TestCase
 
     public function testStoreInvalidLength()
     {
-        $name = "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quis expedita beatae ratione deleniti. Eius alias placeat vero, suscipit necessitatibus distinctio magnam, quas provident inventore, quia libero! Voluptatibus, molestiae eveniet. Placeat debitis, provident ullam autem quisquam libero soluta obcaecati optio aliquid cum molestiae sequi perspiciatis doloribus corrupti error odit quis tenetur. Accusamus labore dicta aliquid suscipit ullam tenetur voluptas odio veniam assumenda nulla blanditiis nihil, adipisci atque possimus quaerat, eos ea ducimus! Veritatis, sunt libero quas odio doloremque qui quasi voluptas a optio? Animi vel, libero doloribus a minima ullam quam fugit, odit rem ex est optio earum doloremque vero? Animi?";
+        $name = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure facere officia rem? Dolorum minus enim laborum iusto asperiores? Adipisci voluptates nemo rerum facilis voluptatum eligendi animi dolores tenetur exercitationem mollitia quis magni cumque ex, vel culpa quibusdam ipsam error quam illo fugiat minima! Modi fugit quaerat, illo architecto voluptatem sed. Iure ipsa magnam non doloremque, ipsum, quaerat repudiandae, explicabo unde saepe commodi dicta ratione enim quo nemo. A, modi sint nemo quae nesciunt consequatur rem eveniet facere eos minus, illo necessitatibus voluptas totam perferendis sequi aperiam odit quas, nulla voluptatibus fugiat sunt voluptatem dicta qui? Quae sint quidem sequi beatae voluptates.';
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->post('/api/admin/provinces', ['name' => $name]);
+        ])->post('/api/admin/cities', ['province_id' => 1, 'name' => $name]);
         $response->assertStatus(422);
         $response->assertJson([
-            "message" => "The name must not be greater than 50 characters.",
+            "message" => "The name must not be greater than 100 characters.",
             "errors" => [
                 "name" => [
-                    "The name must not be greater than 50 characters."
+                    "The name must not be greater than 100 characters."
                 ]
             ]
         ]);
     }
 
-    public function testShowProvinceSuccess()
+    public function testShowCitySuccess()
     {
-        Province::factory()->create([
-            'name' => 'ACEH'
+        City::factory()->create([
+            'province_id' => 1,
+            'name' => 'KOTA MEDAN'
         ]);
 
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->get('/api/admin/provinces/3');
+        ])->get('/api/admin/cities/3');
         $response->assertStatus(200);
         $response->assertJson([
-           "code" => 200,
-           "message" => "success",
-           "data" => [
-               "id" => 3,
-               "name" => "ACEH"
-           ]
+            "code" => 200,
+            "message" => "success",
+            "data" => [
+                "id" => 3,
+                "province_id" => 1,
+                "name" => "KOTA MEDAN"
+            ]
         ]);
     }
 
-    public function testShowProvinceNotFound()
+    public function testShowCityNotFound()
     {
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->get('/api/admin/provinces/asal');
+        ])->get('/api/admin/cities/notfound');
         $response->assertStatus(404);
         $response->assertJson([
             "code" => 404,
-            "message" => "Province not found!"
+            "message" => "City not found!"
         ]);
     }
 
-    public function testUpdateProvinceSuccess()
+    public function testUpdateCitySuccess()
     {
-        Province::factory()->create([
-            'name' => 'ACEH'
+        City::factory()->create([
+            'province_id' => 1,
+            'name' => 'KOTA MEDAN'
         ]);
 
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->put('/api/admin/provinces/4', ['name' => 'SUMATERA UTARA']);
+        ])->put('/api/admin/cities/4', ['province_id' => 2, 'name' => 'KOTA BINJAI']);
         $response->assertStatus(200);
         $response->assertJson([
             "code" => 200,
@@ -182,17 +192,21 @@ class ProvinceControllerTest extends TestCase
 
     public function testUpdateCityInvalidProperty()
     {
-        Province::factory()->create([
-            'name' => 'ACEH'
+        City::factory()->create([
+            'province_id' => 1,
+            'name' => 'KOTA MEDAN'
         ]);
 
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->put('/api/admin/provinces/5', ['name' => '']);
+        ])->put('/api/admin/cities/5', ['province_id' => '', 'name' => '']);
         $response->assertStatus(422);
         $response->assertJson([
-            "message" => "The name field is required.",
+            "message" => "The province id field is required. (and 1 more error)",
             "errors" => [
+                "province_id" => [
+                    "The province id field is required."
+                ],
                 "name" => [
                     "The name field is required."
                 ]
@@ -200,27 +214,28 @@ class ProvinceControllerTest extends TestCase
         ]);
     }
 
-    public function testUpdateProvinceNotFound()
+    public function testUpdateCityNotFound()
     {
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->put('/api/admin/provinces/asal', ['name' => 'SUMATERA UTARA']);
+        ])->put('/api/admin/cities/notfound', ['province_id' => 2, 'name' => 'KOTA MEDAN']);
         $response->assertStatus(404);
         $response->assertJson([
             "code" => 404,
-            "message" => "Province not found!"
+            "message" => "City not found!"
         ]);
     }
 
-    public function testDeleteProvinceSuccess()
+    public function testDeleteCitySuccess()
     {
-        Province::factory()->create([
-            'name' => 'ACEH'
+        City::factory()->create([
+            'province_id' => 1,
+            'name' => 'KOTA MEDAN'
         ]);
 
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->delete('/api/admin/provinces/6');
+        ])->delete('/api/admin/cities/6');
         $response->assertStatus(200);
         $response->assertJson([
             "code" => 200,
@@ -228,15 +243,15 @@ class ProvinceControllerTest extends TestCase
         ]);
     }
 
-    public function testDeleteProvinceNotFound()
+    public function testDeleteCityNotFound()
     {
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->delete('/api/admin/provinces/asal');
+        ])->delete('/api/admin/cities/notfound');
         $response->assertStatus(404);
         $response->assertJson([
             "code" => 404,
-            "message" => "Province not found!"
+            "message" => "City not found!"
         ]);
     }
 }

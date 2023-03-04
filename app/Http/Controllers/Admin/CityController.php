@@ -68,7 +68,7 @@ class CityController extends Controller
         }
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
         try {
             $city = $this->cityService->find($id);

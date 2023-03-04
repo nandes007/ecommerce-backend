@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('province_id')->index();
-            $table->string('name');
+            $table->string('name', 100)->index();
             $table->timestamps();
         });
     }
