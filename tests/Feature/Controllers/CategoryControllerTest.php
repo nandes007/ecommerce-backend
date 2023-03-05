@@ -2,23 +2,24 @@
 
 namespace Tests\Feature\Controllers;
 
-use App\Models\City;
+use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
-class CityControllerTest extends TestCase
+class CategoryControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testGetCityNotEmptyEndpoint()
+    public function testGetCategoryNotEmptyEndpoint()
     {
-        City::factory()->create([
-            'province_id' => 1,
-            'name' => 'KOTA MEDAN'
+        Category::factory()->create([
+            'name' => 'Gadget',
+            'slug' => Str::slug('Gadget')
         ]);
 
-        $response = $this->getJson('/api/admin/cities');
+        $response = $this->getJson('/api/admin/categories');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJson([
@@ -28,8 +29,8 @@ class CityControllerTest extends TestCase
                 "data" => [
                     [
                         "id" => 1,
-                        "province_id" => 1,
-                        "name" => "KOTA MEDAN"
+                        "name" => "Gadget",
+                        "slug" => "gadget"
                     ]
                 ]
             ]
@@ -54,9 +55,9 @@ class CityControllerTest extends TestCase
         ]);
     }
 
-    public function testGetEmptyEndpoint()
+    public function testGetCategoryEmptyEndpoint()
     {
-        $response = $this->getJson('/api/admin/cities');
+        $response = $this->getJson('/api/admin/categories');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJson([
@@ -86,34 +87,64 @@ class CityControllerTest extends TestCase
         ]);
     }
 
-    public function testStoreCitySuccess()
+    public function testSearchCategoryEndpoint()
+    {
+        Category::factory()->create([
+            'name' => 'Gadget',
+            'slug' => Str::slug('Gadget')
+        ]);
+
+        $response = $this->getJson('/api/admin/categories/search', ['q' => 'gadget']);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJson([
+            "code" => 200,
+            "message" => "success",
+            "data" => [
+                [
+                    "name" => "Gadget"
+                ]
+            ]
+        ]);
+    }
+
+    public function testSearchCategoryEmptyEndpoint()
+    {
+        $response = $this->getJson('/api/admin/categories/search', ['q' => 'gadget']);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJson([
+            "code" => 200,
+            "message" => "success",
+            "data" => []
+        ]);
+    }
+
+    public function testStoreCategorySuccess()
     {
         $response = $this->withHeaders([
-            'Accept' => 'application/json'
-        ])->post('/api/admin/cities', ['province_id' => 1, 'name' => 'MEDAN']);
+            "Accept" => 'application/json'
+        ])->post('api/admin/categories', ['name' => 'Fashion']);
         $response->assertStatus(201);
         $response->assertJson([
             "code" => 201,
             "message" => "success",
             "data" => [
-                "province_id" => 1,
-                "name" => "MEDAN"
+                "name" => "Fashion",
+                "slug" => "fashion"
             ]
         ]);
     }
 
-    public function testStoreProvinceEmptyProperty()
+    public function testStoreCategoryEmptyProperty()
     {
         $response = $this->withHeaders([
-            "Accept" => "application/json"
-        ])->post('/api/admin/cities', ['province_id' => '', 'name' => '']);
+            'Accept' => 'application/json'
+        ])->post('/api/admin/categories', ['name' => '']);
         $response->assertStatus(422);
         $response->assertJson([
-            "message" => "The province id field is required. (and 1 more error)",
+            "message" => "The name field is required.",
             "errors" => [
-                "province_id" => [
-                    "The province id field is required."
-                ],
                 "name" => [
                     "The name field is required."
                 ]
@@ -123,10 +154,10 @@ class CityControllerTest extends TestCase
 
     public function testStoreInvalidLength()
     {
-        $name = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure facere officia rem? Dolorum minus enim laborum iusto asperiores? Adipisci voluptates nemo rerum facilis voluptatum eligendi animi dolores tenetur exercitationem mollitia quis magni cumque ex, vel culpa quibusdam ipsam error quam illo fugiat minima! Modi fugit quaerat, illo architecto voluptatem sed. Iure ipsa magnam non doloremque, ipsum, quaerat repudiandae, explicabo unde saepe commodi dicta ratione enim quo nemo. A, modi sint nemo quae nesciunt consequatur rem eveniet facere eos minus, illo necessitatibus voluptas totam perferendis sequi aperiam odit quas, nulla voluptatibus fugiat sunt voluptatem dicta qui? Quae sint quidem sequi beatae voluptates.';
+        $name = "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quis expedita beatae ratione deleniti. Eius alias placeat vero, suscipit necessitatibus distinctio magnam, quas provident inventore, quia libero! Voluptatibus, molestiae eveniet. Placeat debitis, provident ullam autem quisquam libero soluta obcaecati optio aliquid cum molestiae sequi perspiciatis doloribus corrupti error odit quis tenetur. Accusamus labore dicta aliquid suscipit ullam tenetur voluptas odio veniam assumenda nulla blanditiis nihil, adipisci atque possimus quaerat, eos ea ducimus! Veritatis, sunt libero quas odio doloremque qui quasi voluptas a optio? Animi vel, libero doloribus a minima ullam quam fugit, odit rem ex est optio earum doloremque vero? Animi?";
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->post('/api/admin/cities', ['province_id' => 1, 'name' => $name]);
+        ])->post('/api/admin/categories', ['name' => $name]);
         $response->assertStatus(422);
         $response->assertJson([
             "message" => "The name must not be greater than 100 characters.",
@@ -138,50 +169,51 @@ class CityControllerTest extends TestCase
         ]);
     }
 
-    public function testShowCitySuccess()
+    public function testShowCategorySuccess()
     {
-        City::factory()->create([
-            'province_id' => 1,
-            'name' => 'KOTA MEDAN'
+        Category::factory()->create([
+            'name' => 'Gadget',
+            'slug' => Str::slug('Gadget')
         ]);
 
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->get('/api/admin/cities/3');
+        ])->get('/api/admin/categories/4');
         $response->assertStatus(200);
         $response->assertJson([
             "code" => 200,
             "message" => "success",
             "data" => [
-                "id" => 3,
-                "province_id" => 1,
-                "name" => "KOTA MEDAN"
+                "id" => 4,
+                "name" => "Gadget",
+                "slug" => "gadget",
+                "parent_id" => NULL
             ]
         ]);
     }
 
-    public function testShowCityNotFound()
+    public function testShowCategoryNotFound()
     {
         $response = $this->withHeaders([
-            'Accept' => 'application/json'
-        ])->get('/api/admin/cities/notfound');
+            "Accept" => 'application/json'
+        ])->get('/api/admin/categories/notfound');
         $response->assertStatus(404);
         $response->assertJson([
             "code" => 404,
-            "message" => "City not found!"
+            "message" => "Category not found!"
         ]);
     }
 
-    public function testUpdateCitySuccess()
+    public function testUpdateCategorySuccess()
     {
-        City::factory()->create([
-            'province_id' => 1,
-            'name' => 'KOTA MEDAN'
+        Category::factory()->create([
+            'name' => 'Gadget',
+            'slug' => Str::slug('Gadget')
         ]);
 
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->put('/api/admin/cities/4', ['province_id' => 2, 'name' => 'KOTA BINJAI']);
+        ])->put('/api/admin/categories/5', ['name' => 'Gadget']);
         $response->assertStatus(200);
         $response->assertJson([
             "code" => 200,
@@ -189,23 +221,20 @@ class CityControllerTest extends TestCase
         ]);
     }
 
-    public function testUpdateCityInvalidProperty()
+    public function testUpdateCategoryInvalid()
     {
-        City::factory()->create([
-            'province_id' => 1,
-            'name' => 'KOTA MEDAN'
+        Category::factory()->create([
+            'name' => 'Gadget',
+            'slug' => Str::slug('Gadget')
         ]);
 
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->put('/api/admin/cities/5', ['province_id' => '', 'name' => '']);
+        ])->put('/api/admin/categories/6', ['name' => '']);
         $response->assertStatus(422);
         $response->assertJson([
-            "message" => "The province id field is required. (and 1 more error)",
+            "message" => "The name field is required.",
             "errors" => [
-                "province_id" => [
-                    "The province id field is required."
-                ],
                 "name" => [
                     "The name field is required."
                 ]
@@ -213,28 +242,28 @@ class CityControllerTest extends TestCase
         ]);
     }
 
-    public function testUpdateCityNotFound()
+    public function testUpdateCategoryNotFound()
     {
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->put('/api/admin/cities/notfound', ['province_id' => 2, 'name' => 'KOTA MEDAN']);
+        ])->put('/api/admin/categories/notfound', ['name' => 'Fashion']);
         $response->assertStatus(404);
         $response->assertJson([
             "code" => 404,
-            "message" => "City not found!"
+            "message" => "Category not found!"
         ]);
     }
 
-    public function testDeleteCitySuccess()
+    public function testDeleteCategorySuccess()
     {
-        City::factory()->create([
-            'province_id' => 1,
-            'name' => 'KOTA MEDAN'
+        Category::factory()->create([
+            'name' => 'Gadget',
+            'slug' => Str::slug('Gadget')
         ]);
 
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->delete('/api/admin/cities/6');
+        ])->delete('/api/admin/categories/7');
         $response->assertStatus(200);
         $response->assertJson([
             "code" => 200,
@@ -242,15 +271,15 @@ class CityControllerTest extends TestCase
         ]);
     }
 
-    public function testDeleteCityNotFound()
+    public function testDeleteCategoryNotFound()
     {
         $response = $this->withHeaders([
             'Accept' => 'application/json'
-        ])->delete('/api/admin/cities/notfound');
+        ])->delete('/api/admin/categories/notfound');
         $response->assertStatus(404);
         $response->assertJson([
             "code" => 404,
-            "message" => "City not found!"
+            "message" => "Category not found!"
         ]);
     }
 }

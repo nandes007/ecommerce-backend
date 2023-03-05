@@ -5,7 +5,6 @@ namespace Tests\Feature\Services\Admin;
 use App\Models\City;
 use App\Services\Admin\City\CityService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Tests\TestCase;
 
@@ -86,8 +85,8 @@ class CityServiceTest extends TestCase
 
         $this->cityService->save($request);
 
-        $city = $this->cityService->find(1);
-        $this->assertEquals(1, $city->id);
+        $city = $this->cityService->find(4);
+        $this->assertEquals(4, $city->id);
         $this->assertEquals("KOTA MEDAN", $city->name);
     }
 
@@ -102,7 +101,7 @@ class CityServiceTest extends TestCase
         $requestUpdate->name = "KOTA BINJAI";
 
         $this->cityService->save($request);
-        $cityId = $this->cityService->update($requestUpdate, 1);
+        $cityId = $this->cityService->update($requestUpdate, 5);
         $this->assertEquals(1, $cityId);
     }
 
@@ -114,7 +113,7 @@ class CityServiceTest extends TestCase
         ];
 
         $this->cityService->save($request);
-        $cityId = $this->cityService->delete(1);
+        $cityId = $this->cityService->delete(6);
         $this->assertEquals(1, $cityId);
     }
 }

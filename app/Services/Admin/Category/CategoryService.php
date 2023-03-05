@@ -4,15 +4,15 @@ namespace App\Services\Admin\Category;
 
 interface CategoryService
 {
-    public function getAllCategory();
+    public function getAll();
 
     public function search($request);
 
-    public function storeCategory($request);
+    public function save($request);
 
-    public function showCategory($id);
+    public function find($id);
 
-    public function updateCategory($request, $id);
+    public function update($request, $id);
 
-    public function deleteCategory($id);
+    public function delete($id);
 }

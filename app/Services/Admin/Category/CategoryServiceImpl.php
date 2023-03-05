@@ -7,18 +7,16 @@ use Illuminate\Support\Str;
 
 class CategoryServiceImpl implements CategoryService
 {
-    protected $category;
+    protected Category $category;
 
     public function __construct(Category $category)
     {
         $this->category = $category;
     }
 
-    public function getAllCategory()
+    public function getAll()
     {
-        $categories = $this->category->paginate(15);
-
-        return $categories;
+        return $this->category->paginate(15);
     }
 
     public function search($request)
@@ -32,34 +30,28 @@ class CategoryServiceImpl implements CategoryService
         return $categories;
     }
 
-    public function storeCategory($request)
+    public function save($request)
     {
-        $category = $this->category->create($request);
-
-        return $category;
+        return $this->category->create($request);
     }
 
-    public function showCategory($id)
+    public function find($id)
     {
-        $category = $this->category->find($id);
-
-        return $category;
+        return $this->category->find($id);
     }
 
-    public function updateCategory($request, $id)
+    public function update($request, $id)
     {
-        $category = $this->category
+        return $this->category
             ->where('id', $id)
             ->update([
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
                 'parent_id' => $request->parent_id
             ]);
-
-        return $category;
     }
 
-    public function deleteCategory($id)
+    public function delete($id)
     {
         return $this->category->find($id)->delete();
     }

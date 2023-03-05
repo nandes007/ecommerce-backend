@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id()->index();
-            $table->string('name')->index();
-            $table->string('slug');
+            $table->string('name', 100)->index();
+            $table->string('slug', 100);
             $table->bigInteger('parent_id')->nullable();
             $table->timestamps();
         });

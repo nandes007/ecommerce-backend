@@ -52,7 +52,7 @@ class ProvinceControllerTest extends TestCase
         ]);
     }
 
-    public function testGetEmptyEndpoint()
+    public function testGetProvinceEmptyEndpoint()
     {
         $response = $this->getJson('/api/admin/provinces');
 

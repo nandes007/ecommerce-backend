@@ -5,7 +5,6 @@ namespace Tests\Feature\Services\Admin;
 use App\Models\Province;
 use App\Services\Admin\Province\ProvinceService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Tests\TestCase;
 
