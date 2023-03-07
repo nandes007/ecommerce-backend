@@ -69,7 +69,7 @@ class CategoryController extends Controller
                 return $this->errorResponse(message: 'Category not found!', code: 404);
             }
 
-            $this->categoryService->update($request, $id);
+            $this->categoryService->update($request->all(), $id);
 
             return $this->successResponse(message: 'success', code: 200);
         } catch (\Exception $e) {

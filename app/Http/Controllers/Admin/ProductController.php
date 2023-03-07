@@ -16,7 +16,7 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            $products = $this->productService->getAllProduct();
+            $products = $this->productService->getAll();
             return $this->successResponse(message: 'success', data: $products, code: 200);
         } catch (\Exception $e) {
             return $this->errorResponse(message: 'Something went wrong', code: 500);
@@ -33,7 +33,7 @@ class ProductController extends Controller
         ]);
 
         try {
-            $product = $this->productService->storeProduct($request->all());
+            $product = $this->productService->save($request->all());
             return $this->successResponse(message: 'success', data: $product, code: 201);
         } catch (\Exception $e) {
             return $this->errorResponse(message: 'Something went wrong' . $e, code: 500);
@@ -43,7 +43,7 @@ class ProductController extends Controller
     public function show($id)
     {
         try {
-            $product = $this->productService->showProduct($id);
+            $product = $this->productService->find($id);
             if (empty($product)) {
                 return $this->errorResponse(message: 'Product not found!', code: 404);
             }
@@ -57,25 +57,25 @@ class ProductController extends Controller
     public function update(ProductRequest $request, $id)
     {
         try {
-            $product = $this->productService->showProduct($id);
+            $product = $this->productService->find($id);
             if (empty($product)) {
                 return $this->errorResponse(message: 'Product not found!', code: 404);
             }
-            $this->productService->updateProduct($request->all(), $id);
+            $this->productService->update($request->all(), $id);
             return $this->successResponse(message: 'success', code: 200);
         } catch (\Exception $e) {
-            return $this->errorResponse(message: 'Something went wrong', code: 500);
+            return $this->errorResponse(message: 'Something went wrong'.$e, code: 500);
         }
     }
 
     public function destroy($id)
     {
         try {
-            $product = $this->productService->showProduct($id);
+            $product = $this->productService->find($id);
             if (empty($product)) {
                 return $this->errorResponse(message: 'Product not found!', code: 404);
             }
-            $this->productService->deleteProduct($id);
+            $this->productService->delete($id);
             return $this->successResponse(message: 'success', code: 200);
         } catch (\Exception $e) {
             return $this->errorResponse(message: 'Something went wrong!', code: 500);
