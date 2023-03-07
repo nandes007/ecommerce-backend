@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    private $categoryService;
+    private CategoryService $categoryService;
 
     public function __construct(CategoryService $categoryService)
     {
@@ -19,7 +19,7 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            $categories = $this->categoryService->getAllCategory();
+            $categories = $this->categoryService->getAll();
             return $this->successResponse(message: 'success', data: $categories, code: 200);
         } catch (\Exception $e) {
             return $this->errorResponse(message: 'Something went wrong', code: 500);
@@ -40,7 +40,7 @@ class CategoryController extends Controller
     {
         $request->merge(['slug' => Str::slug($request->name)]);
         try {
-            $category = $this->categoryService->storeCategory($request->only(['name', 'parent_id', 'slug']));
+            $category = $this->categoryService->save($request->only(['name', 'parent_id', 'slug']));
             return $this->successResponse(message: 'success', data: $category, code: 201);
         } catch (\Exception $e) {
             return $this->errorResponse(message: 'Something went wrong', code: 500);
@@ -50,7 +50,7 @@ class CategoryController extends Controller
     public function show($id)
     {
         try {
-            $category = $this->categoryService->showCategory($id);
+            $category = $this->categoryService->find($id);
             if (empty($category)) {
                 return $this->errorResponse(message: 'Category not found!', code: 404);
             }
@@ -64,12 +64,12 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, $id)
     {
         try {
-            $category = $this->categoryService->showCategory($id);
+            $category = $this->categoryService->find($id);
             if (empty($category)) {
                 return $this->errorResponse(message: 'Category not found!', code: 404);
             }
 
-            $category = $this->categoryService->updateCategory($request, $id);
+            $this->categoryService->update($request->all(), $id);
 
             return $this->successResponse(message: 'success', code: 200);
         } catch (\Exception $e) {
@@ -77,14 +77,14 @@ class CategoryController extends Controller
         }
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
         try {
-            $category = $this->categoryService->showCategory($id);
+            $category = $this->categoryService->find($id);
             if (empty($category)) {
                 return $this->errorResponse(message: 'Category not found!', code: 404);
             }
-            $this->categoryService->deleteCategory($id);
+            $this->categoryService->delete($id);
             return $this->successResponse(message: 'success', code: 200);
         } catch (\Exception $e) {
             return $this->errorResponse(message: 'Something went wrong!', code: 500);

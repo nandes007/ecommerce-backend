@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Services\Admin\Category;
+namespace App\Services\Admin\Province;
 
-interface CategoryService
+interface ProvinceService
 {
     public function getAll();
-
-    public function search($request);
 
     public function save($request);
 

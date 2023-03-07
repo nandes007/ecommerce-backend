@@ -4,15 +4,15 @@ namespace App\Services\Admin\Product;
 
 interface ProductService
 {
- public function getAllProduct();
+ public function getAll();
 
  public function search($request);
 
- public function storeProduct($request);
+ public function save($request);
 
- public function showProduct($id);
+ public function find($id);
 
- public function updateProduct($request, $id);
+ public function update($request, $id);
 
- public function deleteProduct($id);
+ public function delete($id);
 }

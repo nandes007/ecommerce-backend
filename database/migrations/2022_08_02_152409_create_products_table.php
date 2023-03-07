@@ -15,13 +15,13 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('sku')->index();
-            $table->string('barcode')->index();
-            $table->string('product_name')->index();
-            $table->string('slug');
-            $table->string('unit')->nullable();
-            $table->string('fraction')->nullable();
-            $table->string('status')->nullable();
+            $table->string('sku', 20)->index();
+            $table->string('barcode', 20)->index();
+            $table->string('product_name', 100)->index();
+            $table->string('slug', 100);
+            $table->string('unit', 10)->nullable();
+            $table->integer('fraction')->nullable();
+            $table->string('status', 20)->nullable();
             $table->decimal('avgcost', 15, 2)->nullable();
             $table->decimal('lastcost', 15, 2)->nullable();
             $table->decimal('unitprice', 15, 2)->nullable();

@@ -23,7 +23,7 @@ class CategoryRequest extends FormRequest
     public function postCategoryRules()
     {
         return [
-            'name' => 'required'
+            'name' => 'required|max:100'
         ];
     }
 }

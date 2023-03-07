@@ -23,15 +23,18 @@ class ProductRequest extends FormRequest
     public function postProductRules()
     {
         return [
-            'sku' => 'required',
-            'barcode' => 'required',
-            'product_name' => 'required',
-            'unit' => 'required',
-            'fraction' => 'required',
-            'status' => 'required',
-            'unitprice' => 'required',
-            'price' => 'required',
-            'weight' => 'required',
+            'sku' => 'required|max:20',
+            'barcode' => 'required|max:20',
+            'product_name' => 'required|max:100',
+            'unit' => 'required|max:10',
+            'fraction' => 'required|numeric',
+            'status' => 'required|max:20',
+            'avgcost' => 'required|numeric',
+            'lastcost' => 'required|numeric',
+            'unitprice' => 'required|numeric',
+            'price_old' => 'required|numeric',
+            'price' => 'required|numeric',
+            'weight' => 'required|numeric',
             'tax' => 'required',
             'description' => 'string'
         ];
