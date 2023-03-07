@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Services\Admin\Category;
+namespace App\Services\Admin\City;
 
-interface CategoryService
+interface CityService
 {
     public function getAll();
-
-    public function search($request);
 
     public function save($request);
 
@@ -15,4 +13,5 @@ interface CategoryService
     public function update($request, $id);
 
     public function delete($id);
+
 }

@@ -17,18 +17,26 @@ use Illuminate\Support\Facades\Route;
  * Admin endpoint
  */
 Route::prefix('/admin')->group(function () {
-    Route::get('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index']);
+    /**
+     * Category Endpoint
+     */
     Route::get('/categories/search', [\App\Http\Controllers\Admin\CategoryController::class, 'search']);
-    Route::post('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'store']);
-    Route::get('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'show']);
-    Route::patch('categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'update']);
-    Route::delete('categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'delete']);
+    Route::resource('/categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['create', 'edit']);
 
-    Route::get('/products', [\App\Http\Controllers\Admin\ProductController::class, 'index']);
-    Route::get('/products/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'show']);
-    Route::post('/products', [\App\Http\Controllers\Admin\ProductController::class, 'store']);
-    Route::patch('/products/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'update']);
-    Route::delete('/products/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'destroy']);
+    /**
+     * Product Endpoint
+     */
+    Route::resource('/products', \App\Http\Controllers\Admin\ProductController::class)->except(['create', 'edit']);
+
+    /**
+     * Province Endpoint
+     */
+    Route::resource('/provinces', \App\Http\Controllers\Admin\ProvinceController::class)->except(['create', 'edit']);
+
+    /**
+     * City Endpoint
+     */
+    Route::resource('/cities', \App\Http\Controllers\Admin\CityController::class)->except(['create', 'edit']);
 });
 
 /**
@@ -78,8 +86,8 @@ Route::prefix('/rajaongkir')->group(function () {
     // Route::get('/cities/{provinceId}', [RajaOngkirController::class, 'getCities']);
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/orders', [OrderController::class, 'index']);
-    Route::post('/orders', [OrderController::class, 'store']);
-});
+//Route::middleware('auth:sanctum')->group(function () {
+//    Route::get('/orders', [OrderController::class, 'index']);
+//    Route::post('/orders', [OrderController::class, 'store']);
+//});
 

@@ -5,7 +5,6 @@ namespace Tests\Feature\Services\Admin;
 use App\Models\Category;
 use App\Services\Admin\Category\CategoryService;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -53,9 +52,9 @@ class CategoryServiceTest extends TestCase
             "parent_id" => 3
         ];
 
-        $this->categoryService->storeCategory($category1);
-        $this->categoryService->storeCategory($category2);
-        $categories = $this->categoryService->getAllCategory();
+        $this->categoryService->save($category1);
+        $this->categoryService->save($category2);
+        $categories = $this->categoryService->getAll();
 
         $this->assertCount(2, $categories->items());
         $this->assertInstanceOf(LengthAwarePaginator::class, $categories);
@@ -75,7 +74,7 @@ class CategoryServiceTest extends TestCase
             "name" => "test category",
             "slug" => Str::slug('test category'),
         ];
-        $this->categoryService->storeCategory($request);
+        $this->categoryService->save($request);
 
         $this->assertDatabaseHas('categories', [
             'name' => 'test category',
@@ -90,9 +89,9 @@ class CategoryServiceTest extends TestCase
             "name" => $name,
             "slug" => Str::slug($name),
         ];
-         $this->categoryService->storeCategory($request);
+         $this->categoryService->save($request);
 
-        $category = $this->categoryService->showCategory(4);
+        $category = $this->categoryService->find(4);
         $this->assertEquals(4, $category->id);
         $this->assertEquals("test category 2", $category->name);
         $this->assertEquals("test-category-2", $category->slug);
@@ -108,8 +107,8 @@ class CategoryServiceTest extends TestCase
         $requestUpdate = new Category();
         $requestUpdate->name = "test category 2 update";
 
-        $this->categoryService->storeCategory($request);
-        $categoryId = $this->categoryService->updateCategory($requestUpdate, 5);
+        $this->categoryService->save($request);
+        $categoryId = $this->categoryService->update($requestUpdate, 5);
         $this->assertEquals(1, $categoryId);
     }
 
@@ -120,9 +119,9 @@ class CategoryServiceTest extends TestCase
             "slug" => Str::slug('test category 2'),
         ];
 
-        $this->categoryService->storeCategory($request);
+        $this->categoryService->save($request);
 
-        $categoryId = $this->categoryService->deleteCategory(6);
+        $categoryId = $this->categoryService->delete(6);
         $this->assertEquals(1, $categoryId);
     }
 }
