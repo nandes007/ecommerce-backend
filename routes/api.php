@@ -31,6 +31,7 @@ Route::prefix('/admin')->group(function () {
     /**
      * Province Endpoint
      */
+    Route::get('/provinces/all', [\App\Http\Controllers\Admin\ProvinceController::class, 'getAllProvinceWithoutPagination']);
     Route::resource('/provinces', \App\Http\Controllers\Admin\ProvinceController::class)->except(['create', 'edit']);
 
     /**

@@ -25,6 +25,16 @@ class ProvinceController extends Controller
         }
     }
 
+    public function getAllProvinceWithoutPagination()
+    {
+        try {
+            $provinces = $this->provinceService->getAllWithoutPagination();
+            return $this->successResponse(message: 'success', data: $provinces, code: 200);
+        } catch (\Exception $e) {
+            return $this->errorResponse(message: 'Something went wrong', code: 500);
+        }
+    }
+
     public function store(ProvinceRequest $request)
     {
         try {
