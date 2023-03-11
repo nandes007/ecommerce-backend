@@ -18,6 +18,11 @@ class ProvinceServiceImpl implements ProvinceService
         return $this->province->paginate(10);
     }
 
+    public function getAllWithoutPagination()
+    {
+        return $this->province->all();
+    }
+
     public function save($request)
     {
         return $this->province->create($request);

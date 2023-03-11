@@ -6,6 +6,8 @@ interface ProvinceService
 {
     public function getAll();
 
+    public function getAllWithoutPagination();
+
     public function save($request);
 
     public function find($id);

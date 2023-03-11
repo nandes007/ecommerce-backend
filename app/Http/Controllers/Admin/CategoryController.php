@@ -73,7 +73,7 @@ class CategoryController extends Controller
 
             return $this->successResponse(message: 'success', code: 200);
         } catch (\Exception $e) {
-            return $this->errorResponse(message: 'Something went wrong', code: 500);
+            return $this->errorResponse(message: 'Something went wrong'. $e, code: 500);
         }
     }
 
