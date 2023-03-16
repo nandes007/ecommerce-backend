@@ -27,11 +27,31 @@ class Product extends Model
         'description'
     ];
 
+    /**
+     * Product image relation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function productImages()
     {
         return $this->hasMany(ProductImage::class);
     }
 
+    /**
+     * Product category relation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'product_categories');
+    }
+
+    /**
+     * Cart item relation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function cartItems()
     {
         return $this->hasMany(CartItem::class);

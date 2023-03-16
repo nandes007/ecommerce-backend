@@ -3,6 +3,7 @@
 namespace App\Services\Admin\Product;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class ProductServiceImpl implements ProductService
@@ -17,7 +18,7 @@ class ProductServiceImpl implements ProductService
 
  public function search($request)
  {
-  return $this->product
+     return $this->product
             ->select('id', 'sku', 'barcode', 'product_name', 'fraction', 'unit', 'unitprice', 'price')
             ->orderBy('name', 'ASC')
             ->where('name', 'like', '%'.$request->q.'%')
@@ -26,17 +27,28 @@ class ProductServiceImpl implements ProductService
 
  public function save($request)
  {
-  return $this->product->create($request);
+     $request["category_ids"] = 1;
+     $product = DB::transaction(function() use ($request) {
+        $product = Product::create($request);
+
+        if (!empty($request["category_ids"])) {
+            $product->categories()->attach(1); // still hardcode, you can attach category_ids then
+        }
+
+        return $product;
+     }, 5);
+
+     return $product;
  }
 
  public function find($id)
  {
-  return $this->product->find($id);
+     return $this->product->find($id);
  }
 
  public function update($request, $id)
  {
-    return $this->product
+     return $this->product
         ->where('id', $id)
         ->update([
             "sku" => $request["sku"],
