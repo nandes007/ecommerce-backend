@@ -15,6 +15,21 @@ class Category extends Model
         'parent_id'
     ];
 
+    protected $appends = [
+        'label',
+        'value'
+    ];
+
+    public function getLabelAttribute()
+    {
+        return $this->name;
+    }
+
+    public function getValueAttribute()
+    {
+        return $this->id;
+    }
+
     public function products()
     {
         return $this->belongsToMany(Product::class, 'product_categories');
