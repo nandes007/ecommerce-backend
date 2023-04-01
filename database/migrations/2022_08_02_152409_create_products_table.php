@@ -31,6 +31,7 @@ return new class extends Migration
             $table->boolean('tax')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

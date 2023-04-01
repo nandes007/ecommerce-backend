@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('province_id')->index();
             $table->string('name', 100)->index();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

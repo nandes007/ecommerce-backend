@@ -42,8 +42,8 @@ return new class extends Migration
             $table->unsignedBigInteger('cancelled_by')->nullable();
             $table->datetime('cancelled_at')->nullable();
             $table->text('cancellation_note')->nullable();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

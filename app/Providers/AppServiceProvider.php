@@ -6,6 +6,8 @@ use App\Services\Admin\City\CityService;
 use App\Services\Admin\City\CityServiceImpl;
 use App\Services\Admin\Province\ProvinceService;
 use App\Services\Admin\Province\ProvinceServiceImpl;
+use App\Services\Helper\Image\ImageService;
+use App\Services\Helper\Image\ImageServiceImpl;
 use Illuminate\Support\ServiceProvider;
 use App\Services\Admin\Category\CategoryService;
 use App\Services\Admin\Category\CategoryServiceImpl;
@@ -33,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProductService::class, ProductServiceImpl::class);
         $this->app->bind(ProvinceService::class, ProvinceServiceImpl::class);
         $this->app->bind(CityService::class, CityServiceImpl::class);
+        $this->app->bind(ImageService::class, ImageServiceImpl::class);
     }
 
     /**

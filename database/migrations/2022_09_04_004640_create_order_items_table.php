@@ -28,6 +28,7 @@ return new class extends Migration
             $table->decimal('gross', 16, 2)->default(0);
             $table->decimal('sub_total', 16, 2)->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

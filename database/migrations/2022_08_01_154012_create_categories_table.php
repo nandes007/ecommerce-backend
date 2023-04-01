@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('slug', 100);
             $table->bigInteger('parent_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

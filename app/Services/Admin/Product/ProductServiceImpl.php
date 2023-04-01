@@ -28,44 +28,24 @@ class ProductServiceImpl implements ProductService
 
  public function save($request)
  {
-     if (!empty($request["product_images"])) {
-         $productImages = $request["product_images"];
-         foreach ($productImages as $productImage) {
-             $resizedImage = Image::make($productImage)->resize(500, null, function($constraint) {
-                 $constraint->aspecRatio();
-             });
+     $product = DB::transaction(function() use ($request) {
+        $product = Product::create($request);
 
-             $filename = time() . '_' . $productImage->getClientOriginalName();
-             $resizedImage->save(public_path('images/'. $filename));
+        if (!empty($request["category_ids"])) {
+            $product->categories()->attach($request['category_ids']);
+        }
 
-             $urls[] = asset('images/' . $filename);
-         }
-     }
-//     $product = DB::transaction(function() use ($request) {
-//        $product = Product::create($request);
-//         $urls= [];
-//
-//        if (!empty($request["category_ids"])) {
-//            $product->categories()->attach($request['category_ids']); // still hardcode, you can attach category_ids then
-//        }
-//
-//        if (!empty($request["product_images"])) {
-//            $productImages = $request["product_images"];
-//            foreach ($productImages as $productImage) {
-//                $resizedImage = Image::make($productImage)->resize(500, null, function($constraint) {
-//                    $constraint->aspecRatio();
-//                });
-//
-//                $filename = time() . '_' . $productImage->getClientOriginalName();
-//                $resizedImage->save(public_path('images/'. $filename));
-//
-//                $urls[] = asset('images/' . $filename);
-//            }
-//        }
-//        return $request["product_images"];
-//     }, 5);
+        if ($request['product_images']) {
+            foreach ($request['product_images'] as $image) {
+                 $product->productImages()->create([
+                     'path' => $image
+                 ]);
+            }
+        }
+        return $product;
+     }, 5);
 
-     return $request["product_images"];
+     return $product;
  }
 
  public function find($id)
@@ -96,7 +76,7 @@ class ProductServiceImpl implements ProductService
              ]);
 
              if (!empty($request["category_ids"])) {
-                 $product->categories()->sync($request['category_ids']); // still hardcode, you can attach category_ids then
+                 $product->categories()->sync($request['category_ids']);
              }
 
              return $product;
