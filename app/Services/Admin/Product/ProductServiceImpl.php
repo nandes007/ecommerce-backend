@@ -29,13 +29,13 @@ class ProductServiceImpl implements ProductService
  public function save($request)
  {
      $product = DB::transaction(function() use ($request) {
-        $product = Product::create($request);
+        $product = $this->product->create($request);
 
         if (!empty($request["category_ids"])) {
             $product->categories()->attach($request['category_ids']);
         }
 
-        if ($request['product_images']) {
+        if (!empty($request['product_images'])) {
             foreach ($request['product_images'] as $image) {
                  $product->productImages()->create([
                      'path' => $image

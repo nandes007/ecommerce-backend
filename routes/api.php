@@ -38,6 +38,11 @@ Route::prefix('/admin')->group(function () {
      * City Endpoint
      */
     Route::resource('/cities', \App\Http\Controllers\Admin\CityController::class)->except(['create', 'edit']);
+
+    /**
+     * Banner Endpoint
+     */
+    Route::resource('/banners', \App\Http\Controllers\Admin\BannerController::class)->except(['create', 'edit'])->middleware('auth:sanctum');
 });
 
 /**

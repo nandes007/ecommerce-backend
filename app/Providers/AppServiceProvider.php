@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\Admin\Banner\BannerService;
+use App\Services\Admin\Banner\BannerServiceImpl;
 use App\Services\Admin\City\CityService;
 use App\Services\Admin\City\CityServiceImpl;
 use App\Services\Admin\Province\ProvinceService;
@@ -36,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProvinceService::class, ProvinceServiceImpl::class);
         $this->app->bind(CityService::class, CityServiceImpl::class);
         $this->app->bind(ImageService::class, ImageServiceImpl::class);
+        $this->app->bind(BannerService::class, BannerServiceImpl::class);
     }
 
     /**

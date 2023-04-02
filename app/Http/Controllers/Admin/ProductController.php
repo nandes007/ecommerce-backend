@@ -36,8 +36,8 @@ class ProductController extends Controller
 
         if ($request->hasFile('images')) {
             $images = $request->file('images');
-            $imageResized = $this->imageService->resizeImage($images);
-            $imageUploaded = $this->imageService->uploadImage($imageResized);
+            $imageResized = $this->imageService->resizeMultipleImages($images, 'products');
+            $imageUploaded = $this->imageService->uploadMultipleImages($imageResized, 'products');
             $request->merge([
                 'product_images' => $imageUploaded
             ]);

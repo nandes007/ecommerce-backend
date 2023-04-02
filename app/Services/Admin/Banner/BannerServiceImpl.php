@@ -2,31 +2,45 @@
 
 namespace App\Services\Admin\Banner;
 
+use App\Models\Banner;
+use Illuminate\Support\Facades\DB;
+
 class BannerServiceImpl implements BannerService
 {
 
+    public function __construct(protected Banner $banner)
+    {
+    }
+
     public function getAll()
     {
-        // TODO: Implement getAll() method.
+        return $this->banner->with('user')->paginate(10);
     }
 
     public function save($request)
     {
-        // TODO: Implement save() method.
+        return $this->banner->create($request);
     }
 
     public function find($id)
     {
-        // TODO: Implement find() method.
+        return $this->banner->find($id);
     }
 
     public function update($request, $id)
     {
-        // TODO: Implement update() method.
+        return $this->banner->where('id', $id)
+                    ->update([
+                        'user_id' => $request->user_id,
+                        'title' => $request->title,
+                        'url' => $request->url,
+                        'status' => $request->status,
+                        'image_path' => $request->image_path
+                    ]);
     }
 
     public function delete($id)
     {
-        // TODO: Implement delete() method.
+        return $this->banner->find($id)->delete();
     }
 }
