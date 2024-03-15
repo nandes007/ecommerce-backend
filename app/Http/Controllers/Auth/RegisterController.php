@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Events\RegisteredUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Jobs\EmailVerifySenderJob;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -39,7 +40,8 @@ class RegisterController extends Controller
         }
 
         $user->save();
-        RegisteredUser::dispatch($user);
+        EmailVerifySenderJob::dispatch($user);
+        // RegisteredUser::dispatch($user);
 
         if (empty($user)) {
             return $this->errorResponse(message: 'Oops something went wrong!', code: 500);
