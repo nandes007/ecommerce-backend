@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Events\RegisteredUser;
 use App\Http\Controllers\Controller;
+use App\Jobs\EmailVerifySenderJob;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ResendVerificationController extends Controller
@@ -21,12 +23,12 @@ class ResendVerificationController extends Controller
         $user = User::where('email', $email)->first();
 
         if (empty($user)) {
-            return $this->errorResponse(message: 'User not found!', code: 404);
+            return $this->errorResponse(message: 'User has been no longer exist!', code: JsonResponse::HTTP_BAD_REQUEST);
         }
 
         $user->code = $code;
         $user->save();
-        RegisteredUser::dispatch($user);
-        return $this->successResponse(message: 'Verification code has been sent.', data: $user, code: 200);
+        EmailVerifySenderJob::dispatch($user);
+        return $this->successResponse(message: 'Verification code has been sent.', data: $user, code: JsonResponse::HTTP_OK);
     }
 }

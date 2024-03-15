@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Services\User\UserService;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -19,23 +20,15 @@ class UserController extends Controller
 
     public function updateProfile(Request $request)
     {
-        $request->validated();
         $userId = $request->user()->id;
         $data = $request->all();
 
         try {
             $result = $this->userService->updateProfile($userId, $data);
-            $statusCode = 200;
-            $message = 'success';
-            $status = true;
+            return $this->successResponse(data: $result, message: "Successfully updated profile", code: JsonResponse::HTTP_OK);
         } catch (Exception $e) {
-            $result = [];
-            $statusCode = 500;
-            $message = $e->getMessage();
-            $status = true;
+            return $this->errorResponse(message: "Sorry, something went wrong", code: JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return $this->successResponse(data: $result, message: $message, code:$statusCode);
     }
 
     public function check(Request $request)

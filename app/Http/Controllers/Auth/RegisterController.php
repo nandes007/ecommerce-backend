@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Events\RegisteredUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Jobs\EmailVerifySenderJob;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 
 class RegisterController extends Controller
 {
     public function send(RegisterRequest $request)
     {
-        $request->validated();
-
         $code = rand(100000, 999999);
         $name = $request->name;
         $email = $request->email;
@@ -41,13 +38,7 @@ class RegisterController extends Controller
 
         $user->save();
         EmailVerifySenderJob::dispatch($user);
-        // RegisteredUser::dispatch($user);
-
-        if (empty($user)) {
-            return $this->errorResponse(message: 'Oops something went wrong!', code: 500);
-        }
-
-        return $this->successResponse(message: 'Your user has been registered successfuly', data: $user, code: 200);
+        return $this->successResponse(message: 'Your user has been registered successfuly', data: $user, code: JsonResponse::HTTP_OK);
     }
 
     public function verify(Request $request)
@@ -58,13 +49,15 @@ class RegisterController extends Controller
         $user = User::where('email', $email)->first();
 
         if (empty($user)) {
-            return $this->errorResponse(message: 'User not found!', code: 404);
+            return $this->errorResponse(message: 'User has no longer exist!', code: JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        if ($user->email == $email && $user->code == $code) {
-            $user->is_verified = true;
-            $user->save();
-            return $this->successResponse(message: 'Your account has been verified successfully.', code: 200);
+        if ($user->email != $email || $user->code != $code) {
+            return $this->errorResponse(message: 'Invalid verify coed', code: JsonResponse::HTTP_BAD_REQUEST);
         }
+
+        $user->is_verified = true;
+        $user->save();
+        return $this->successResponse(message: 'Your account has been verified successfully.', code: JsonResponse::HTTP_OK);
     }
 }
