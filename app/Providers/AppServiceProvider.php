@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\User\IUserRepository;
+use App\Repositories\User\UserRepository;
 use App\Services\Admin\City\CityService;
 use App\Services\Admin\City\CityServiceImpl;
 use App\Services\Admin\Province\ProvinceService;
@@ -27,6 +29,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->bind(UserRepository::class, IUserRepository::class);
+        //
         $this->app->bind(CartService::class, CartServiceImpl::class);
         $this->app->bind(UserService::class, UserServiceImpl::class);
         $this->app->bind(CategoryService::class, CategoryServiceImpl::class);
@@ -42,6 +46,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        ini_set('memory_limit', '-1');
     }
 }

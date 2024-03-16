@@ -4,16 +4,38 @@ namespace App\Services\User;
 
 use App\Models\User;
 use App\Repositories\User\UserRepository;
-use Illuminate\Support\Facades\Validator;
-use InvalidArgumentException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Request;
 
 class UserServiceImpl implements UserService
 {
+    protected UserRepository $userRepository;
     protected $user;
 
-    public function __construct(User $user)
+    public function __construct(User $user, UserRepository $userRepository)
     {
+        $this->userRepository = $userRepository;
         $this->user = $user;
+    }
+
+    public function storeUser(Request $request):?User
+    {
+        return $this->userRepository->store($request);
+    }
+
+    public function findUserById(int $id): ?User
+    {
+        return $this->userRepository->find($id);
+    }
+
+    public function findUserByEmail(string $email): ?User
+    {
+        return $this->userRepository->findByEmail($email);
+    }
+
+    public function updateUser(Request $request, int $id): ?User
+    {
+        return $this->userRepository->update($request, $id);
     }
 
     public function updateProfile($id, $data) : User

@@ -43,23 +43,25 @@ Route::prefix('/admin')->group(function () {
 /**
  * User Endpoint
  */
-Route::get('/users', [UserController::class, 'profile'])->middleware('auth:sanctum', 'is_verified');
+Route::get('/users', [UserController::class, 'profile'])->middleware('auth:sanctum');
 Route::prefix('/users')->group(function () {
-    Route::middleware(['auth:sanctum', 'is_verified'])->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/logout', [UserController::class, 'logout']);
         Route::get('/change-password', ChangePasswordController::class);
         Route::put('/update', [UserController::class, 'updateProfile']);
     });
-    Route::middleware('is_verified')->group(function () {
-        Route::post('/login', LoginController::class);
-        Route::post('/forgot-password', [ResetPasswordController::class, 'send']);
-        Route::post('/reset-password', [ResetPasswordController::class, 'reset']);
-    });
+    // Route::middleware('is_verified')->group(function () {
+    //     Route::post('/login', LoginController::class);
+    //     Route::post('/forgot-password', [ResetPasswordController::class, 'send']);
+    //     Route::post('/reset-password', [ResetPasswordController::class, 'reset']);
+    // });
 
-    Route::post('/register', [RegisterController::class, 'send'])->middleware('is_not_verified');
-    Route::post('/verify', [RegisterController::class, 'verify']);
-    Route::post('/resend-verification', ResendVerificationController::class);
+    Route::post('/register', [RegisterController::class, 'register']);
+    Route::post('/login', LoginController::class);
     Route::post('/check', [UserController::class, 'check']);
+    // Route::post('/register', [RegisterController::class, 'send'])->middleware('is_not_verified');
+    // Route::post('/verify', [RegisterController::class, 'verify']);
+    // Route::post('/resend-verification', ResendVerificationController::class);
 });
 
 /**

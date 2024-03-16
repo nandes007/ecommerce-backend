@@ -38,33 +38,30 @@ class UserController extends Controller
         [$id, $token] = explode('|', $keyAuth, 2);
         $accessToken = PersonalAccessToken::find($id);
 
-        if (empty($accessToken)) {
-            return $this->errorResponse(message: 'Token not found!', code: 404);
+        if (empty($accessToken) || !hash_equals($accessToken->token, hash('sha256', $token))) {
+            return $this->errorResponse(message: 'Invalid access token!', code: JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        if (hash_equals($accessToken->token, hash('sha256', $token))) {
-            return $this->successResponse(message: 'Token is match.', code: 200, data: $accessToken);
-        } else {
-            return $this->errorResponse(message: 'Token is miss match', code: 401);
-        }
+        return $this->successResponse(message: 'OK', code: JsonResponse::HTTP_OK, data: $accessToken);
     }
 
     public function profile(Request $request)
     {
-        $data = [
-            'name' => $request->user()->name,
-            'email' => $request->user()->email,
-            'phone_number' => $request->user()->phone_number,
-            'gender' => $request->user()->gender,
-            'birth_of_date' => $request->user()->birth_of_date,
-            'type' => $request->user()->type,
-            'province_id' => $request->user()->province_id,
-            'city_id' => $request->user()->city_id,
-            'address' => $request->user()->address,
-            'postalcode' => $request->user()->postalcode
-        ];
+        $user = auth()->user();
+        // $data = [
+        //     'name' => $request->user()->name,
+        //     'email' => $request->user()->email,
+        //     'phone_number' => $request->user()->phone_number,
+        //     'gender' => $request->user()->gender,
+        //     'birth_of_date' => $request->user()->birth_of_date,
+        //     'type' => $request->user()->type,
+        //     'province_id' => $request->user()->province_id,
+        //     'city_id' => $request->user()->city_id,
+        //     'address' => $request->user()->address,
+        //     'postalcode' => $request->user()->postalcode
+        // ];
 
-        return $this->successResponse(message: 'success', data: $data, code: 200);
+        return $this->successResponse(message: 'OK', data: $user, code: JsonResponse::HTTP_OK);
     }
 
     public function logout(Request $request)
@@ -72,9 +69,9 @@ class UserController extends Controller
         $user = $request->user()->currentAccessToken()->delete();
 
         if (empty($user)) {
-            return $this->errorResponse(message: 'User not found!', code: 404);
+            return $this->errorResponse(message: 'Sorry, something went wrong', code: JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        return $this->successResponse(message: 'You are logout', code: 200);
+        return $this->successResponse(message: 'OK', code: JsonResponse::HTTP_OK);
     }
 }

@@ -6,12 +6,34 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Jobs\EmailVerifySenderJob;
 use App\Models\User;
+use App\Services\User\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
+    public function __construct(protected UserService $userService)
+    {
+        //
+    }
+    
+    public function register(RegisterRequest $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+            return response()->json([
+                'message' => 'User has been registered'
+            ], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        $user = $this->userService->storeUser($request);
+
+        return response()->json([
+            'message' => 'Successfully registered user'
+        ], JsonResponse::HTTP_OK);
+    }
+
     public function send(RegisterRequest $request)
     {
         $code = rand(100000, 999999);
